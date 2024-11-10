@@ -2,6 +2,7 @@ import django.contrib.auth
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import get_user_model
+from django.views import generic
 
 from catalog.models import Finding, Collection
 
@@ -15,4 +16,10 @@ def index(request: HttpRequest) -> HttpResponse:
         "num_comrades": num_comrades,
     }
     return render(request, "catalog/index.html", context=context)
+
+
+class UserList(generic.ListView):
+    model = get_user_model()
+
+
 

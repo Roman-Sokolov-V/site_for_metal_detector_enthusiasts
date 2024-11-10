@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+  <ul> Ower comrades</ul>
+  {% for user in user_list.all %}
+    <li><a href="#">{{ user.username }}</a></li>
+  {% empty %}
+    <p> We don't have any comrades, yet.</p>
+  {% endfor %}
+{% endblock %}
