@@ -21,5 +21,9 @@ def index(request: HttpRequest) -> HttpResponse:
 class UserList(generic.ListView):
     model = get_user_model()
 
+class UserDetail(generic.DetailView):
+    model = get_user_model()
 
-
+    def get_queryset(self):
+        queryset = super().get_queryset().prefetch_related("findings").all()
+        return queryset

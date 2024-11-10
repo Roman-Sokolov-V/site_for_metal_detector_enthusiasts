@@ -1,4 +1,5 @@
 import django.db.models
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from my_precious.settings import AUTH_USER_MODEL
@@ -9,6 +10,7 @@ RATING_CHOICES = [(1, 1),(2, 2),(3, 3),(4, 4), (5, 5)]
 
 class User(AbstractUser):
     detector_model = models.CharField(max_length=255, blank=True, null=True)
+    photo = models.ImageField(upload_to="users_photo/", null=True, blank=True)
 
     class Meta:
         ordering = ("username",)
