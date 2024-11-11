@@ -35,3 +35,9 @@ class CollectionList(generic.ListView):
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related("findings").all()
         return queryset
+
+class CollectionDetail(generic.DetailView):
+    model = Collection
+    slug_field = "name"
+    slug_url_kwarg = "coll_slag"
+    queryset = Collection.objects.prefetch_related("findings")

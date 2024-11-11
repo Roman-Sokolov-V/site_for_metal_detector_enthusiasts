@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from catalog.views import (
-    index, UserList, UserDetail, CollectionList
+    index, UserList, UserDetail, CollectionList, CollectionDetail
 )
 
 
@@ -14,4 +14,5 @@ urlpatterns = [
     path("comrades/", UserList.as_view(), name="comrades"),
     path("comrades/<int:pk>/", UserDetail.as_view(), name="comrades-detail"),
     path("collections/", CollectionList.as_view(), name="collections"),
+    path("collections/<slug:coll_slag>/", CollectionDetail.as_view(), name="collections-detail"),
     ]

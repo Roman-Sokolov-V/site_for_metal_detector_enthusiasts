@@ -2,6 +2,6 @@
 {% block content %}
   <h1> Our collections</h1>
   {% for collection in collection_list.all %}
-    <li><a href="#">{{ collection.name }}</a> This collection has {{ collection.findings.count }} items</li>
+    <li><a href="{% url 'catalog:collections-detail' coll_slag=collection.name %}">{{ collection.name }}</a> This collection has {{ collection.findings.count }} items</li>
   {% endfor %}
 {% endblock %}
