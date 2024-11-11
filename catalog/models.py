@@ -2,6 +2,7 @@ import django.db.models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Avg
 from my_precious.settings import AUTH_USER_MODEL
 
 
@@ -24,7 +25,8 @@ class Finding(models.Model):
     description = models.TextField(blank=True, null=True)
     location = models.TextField(blank=True, null=True)
     date_found = models.DateField(blank=True, null=True)
-    rating = models.IntegerField(null=True, blank=True, choices=RATING_CHOICES)
+    rating = models.IntegerField(null=True, blank=True,
+    choices=RATING_CHOICES)
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="findings")
     collections = models.ManyToManyField("Collection", related_name="findings", blank= True)
     created_at = models.DateTimeField(auto_now_add=True,)
@@ -36,6 +38,7 @@ class Finding(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
 
 
 class Collection(models.Model):

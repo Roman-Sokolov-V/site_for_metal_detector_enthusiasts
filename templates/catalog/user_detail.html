@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Comrad aka {{ user.username  }}</h1> Comrad aka {{ user.username  }}
+  <h1>Comrad aka {{ user.username  }}</h1>
   <p>Email: {{ user.email }}</p>
   <p>Date Joined: {{ user.date_joined }}</p>
   <p>Last Login: {{ user.last_login }}</p>
   <p>Number of Findings: {{ user.findings.count }}</p>
   <p>Date joined: {{ user.date_joined }}</p>
   <p>Uses metal detector: {{ user.detector_model }}</p>
-
 
 {% endblock %}

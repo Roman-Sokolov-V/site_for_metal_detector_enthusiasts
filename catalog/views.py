@@ -45,3 +45,13 @@ class CollectionDetail(generic.DetailView):
 
 class FindingsList(generic.ListView):
     model = Finding
+
+
+class FindingsDetail(generic.DetailView):
+    model = Finding
+
+    def get_queryset(self):
+        queryset = super().get_queryset().prefetch_related(
+            "images", "collections", "feedbacks",
+        ).select_related("user").all()
+        return queryset

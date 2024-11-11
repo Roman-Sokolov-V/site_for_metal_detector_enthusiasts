@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Name: {{ finding.name }}</h1>
+  <p>Description: {{ finding.description }}</p>
+  <p>Location: {{ finding.location }}</p>
+  <p>Date found: {{ finding.date_found }}</p>
+  <p>rating: {{ finding.rating }}</p>
+  <p>created_at: {{ finding.created_at }}</p>  
+  <p>Comrad {{ finding.user }} found it
+    {% if finding.user.detector_model %}
+      with {{ finding.user.detector_model }}
+    {% endif %}
+  </p>
+   
+  
+ <ul>Images: 
+  {% for image in finding.images.all %}
+    <li>      
+      <img src="{{ image.image_url }}" alt="Image for {{ finding.name }}">
+    </li>
+  {% endfor %}  
+</ul>
+  
+  <ul>Feedbacks: 
+    {% for feedback in finding.feedbacks.all %}
+    <li>
+      from {{ feedback.reviewer }} at {{ feedback.created_at }}
+      <br>
+      {{ feedback.comment }}
+      <br>
+      {% if feedback.rating %}
+      rated as {{ feedback.rating }} points
+    {% endif %}      
+    </li>  
+  {% endfor %}  
+  </ul>
+{% endblock %}
