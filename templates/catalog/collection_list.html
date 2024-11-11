@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1> Our collections</h1>
+  {% for collection in collection_list.all %}
+    <li><a href="#">{{ collection.name }}</a> This collection has {{ collection.findings.count }} items</li>
+  {% endfor %}
+{% endblock %}

@@ -27,3 +27,11 @@ class UserDetail(generic.DetailView):
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related("findings").all()
         return queryset
+
+
+class CollectionList(generic.ListView):
+    model = Collection
+
+    def get_queryset(self):
+        queryset = super().get_queryset().prefetch_related("findings").all()
+        return queryset
