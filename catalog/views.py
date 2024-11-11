@@ -41,3 +41,7 @@ class CollectionDetail(generic.DetailView):
     slug_field = "name"
     slug_url_kwarg = "coll_slag"
     queryset = Collection.objects.prefetch_related("findings")
+
+
+class FindingsList(generic.ListView):
+    model = Finding
