@@ -1,11 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
   <h1>Comrad aka {{ user.username  }}</h1>
+  <a href="{% url 'catalog:comrades-update' pk=user.pk %}">Update 
+    information</a>
   <p>Email: {{ user.email }}</p>
   <p>Date Joined: {{ user.date_joined }}</p>
   <p>Last Login: {{ user.last_login }}</p>
   <p>Number of Findings: {{ user.findings.count }}</p>
   <p>Date joined: {{ user.date_joined }}</p>
   <p>Uses metal detector: {{ user.detector_model }}</p>
+
+  {% if user.photo %}
+    <img src="{{ user.photo.url }}" alt="{{ user.username }}'s photo" 
+         width="400" height="300">
+  {% else %}
+    <p>No photo available.</p>
+  {% endif %}
 
 {% endblock %}

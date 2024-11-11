@@ -36,6 +36,12 @@ class UserCreate(generic.CreateView):
     success_url = reverse_lazy("catalog:comrades")
 
 
+class UserUpdate(generic.UpdateView):
+    model = get_user_model()
+    fields = ("first_name", "last_name", "detector_model", "photo")
+    success_url = reverse_lazy("catalog:comrades")
+
+
 class CollectionList(generic.ListView):
     model = Collection
 
