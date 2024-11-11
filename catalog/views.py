@@ -2,6 +2,7 @@ import django.contrib.auth
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
 from django.views import generic
 
 from catalog.models import Finding, Collection
@@ -27,6 +28,12 @@ class UserDetail(generic.DetailView):
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related("findings").all()
         return queryset
+
+class UserCreate(generic.CreateView):
+    model = get_user_model()
+    fields = ("username", "password", "first_name",
+              "last_name", "detector_model")
+    success_url = reverse_lazy("catalog:comrades")
 
 
 class CollectionList(generic.ListView):

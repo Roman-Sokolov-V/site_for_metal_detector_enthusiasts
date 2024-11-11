@@ -7,4 +7,10 @@
   {% empty %}
     <p> We don't have any comrades, yet.</p>
   {% endfor %}
+  <p> If you want tp be our comrade
+    <a href="{% url 'catalog:comrades-create' %}">
+      click here
+    </a>
+
+  </p>
 {% endblock %}

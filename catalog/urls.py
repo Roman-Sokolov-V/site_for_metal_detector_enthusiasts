@@ -6,6 +6,7 @@ from catalog.views import (
     index,
     UserList,
     UserDetail,
+    UserCreate,
     CollectionList,
     CollectionDetail,
     FindingsList,
@@ -19,6 +20,7 @@ urlpatterns = [
     path("index/", index, name="index"),
     path("comrades/", UserList.as_view(), name="comrades"),
     path("comrades/<int:pk>/", UserDetail.as_view(), name="comrades-detail"),
+    path("comrades/create/", UserCreate.as_view(), name="comrades-create"),
     path("collections/", CollectionList.as_view(), name="collections"),
     path(
         "collections/<slug:coll_slag>/",

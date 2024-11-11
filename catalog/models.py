@@ -10,7 +10,7 @@ from my_precious.settings import AUTH_USER_MODEL
 RATING_CHOICES = [(1, 1),(2, 2),(3, 3),(4, 4), (5, 5)]
 
 class User(AbstractUser):
-    detector_model = models.CharField(max_length=255, blank=True, null=True)
+    detector_model = models.CharField(max_length=255, null=True, blank=True)
     photo = models.ImageField(upload_to="users_photo/", null=True, blank=True)
 
     class Meta:
