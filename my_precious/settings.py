@@ -126,6 +126,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "catalog.User"
 
-UserUpdate = "/media/"
+LOGIN_REDIRECT_URL = "/catalog/index/"
+
+LOGOUT_REDIRECT_URL = "/catalog/index/"
+
+MEDIA_URL = "/media/"
 
 MEDIA_ROOT = BASE_DIR / "media"

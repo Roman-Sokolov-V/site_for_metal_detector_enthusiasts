@@ -74,3 +74,4 @@ class FindingsDetail(generic.DetailView):
             "images", "collections", "feedbacks",
         ).select_related("user").all()
         return queryset
+
