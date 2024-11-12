@@ -2,6 +2,7 @@ import django.contrib.auth
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -33,17 +34,27 @@ class UserDetail(generic.DetailView):
         queryset = super().get_queryset().prefetch_related("findings").all()
         return queryset
 
-class UserCreate(generic.CreateView):
+class UserCreate(UserPassesTestMixin, generic.CreateView):
     model = get_user_model()
     fields = ("username", "password", "first_name",
               "last_name", "detector_model")
     success_url = reverse_lazy("catalog:comrades")
 
+    def test_func(self):
+        return not self.request.user.is_authenticated
 
-class UserUpdate(generic.UpdateView):
+
+
+
+class UserUpdate(LoginRequiredMixin, generic.UpdateView):
     model = get_user_model()
     fields = ("first_name", "last_name", "detector_model", "photo")
     success_url = reverse_lazy("catalog:comrades")
+
+    def test_func(self):
+        user = self.get_object()
+        return self.request.user == user or self.request.user.is_superuser
+
 
 
 class CollectionList(generic.ListView):
