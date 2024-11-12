@@ -4,4 +4,9 @@
   <li>Findings: {{ num_findings }}</li>
   <li>Collections: {{ num_collections }}</li>
   <li>Comrades: {{ num_comrades }}</li>
+  <p>To become a comrade, please register <a href="{% url 'catalog:comrades-create' %}">here</a></p>
+  <p>
+    You have visited this page {{ num_visits }}{% if num_visits == 1 %} time
+    {% else %} times{% endif %}
+  </p>
 {% endblock %}

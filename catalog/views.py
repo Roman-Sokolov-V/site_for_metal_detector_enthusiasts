@@ -11,10 +11,13 @@ def index(request: HttpRequest) -> HttpResponse:
     num_findings = Finding.objects.count()
     num_collections = Collection.objects.count()
     num_comrades = get_user_model().objects.count()
+    num_visits = request.session.get("visits", 0)
+    request.session["visits"] = num_visits + 1
     context = {
         "num_findings": num_findings,
         "num_collections": num_collections,
         "num_comrades": num_comrades,
+        "num_visits": num_visits,
     }
     return render(request, "catalog/index.html", context=context)
 
