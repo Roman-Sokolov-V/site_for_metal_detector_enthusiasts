@@ -24,6 +24,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 class UserList(generic.ListView):
     model = get_user_model()
+    paginate_by = 1
 
 class UserDetail(generic.DetailView):
     model = get_user_model()
@@ -47,6 +48,7 @@ class UserUpdate(generic.UpdateView):
 
 class CollectionList(generic.ListView):
     model = Collection
+    paginate_by = 1
 
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related("findings")
@@ -64,6 +66,7 @@ class CollectionDetail(generic.DetailView):
 
 class FindingsList(generic.ListView):
     model = Finding
+    paginate_by = 1
 
 
 class FindingsDetail(generic.DetailView):
