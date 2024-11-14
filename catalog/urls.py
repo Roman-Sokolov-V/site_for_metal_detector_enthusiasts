@@ -1,6 +1,4 @@
-from catalog.models import Collection
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 
 from catalog.views import (
     index,
@@ -10,6 +8,8 @@ from catalog.views import (
     UserUpdate,
     CollectionList,
     CollectionDetail,
+    CollectionCreate,
+    CollectionUpdate,
     FindingsList,
     FindingsDetail,
 )
@@ -24,12 +24,15 @@ urlpatterns = [
     path("comrades/create/", UserCreate.as_view(), name="comrades-create"),
     path("comrades/<int:pk>/update/", UserUpdate.as_view(),
          name="comrades-update"),
+    path("collections/create/", CollectionCreate.as_view(), name="collections-create"),
+    path("collections/<int:pk>/update/", CollectionUpdate.as_view(), name="collections-update"),
     path("collections/", CollectionList.as_view(), name="collections"),
     path(
         "collections/<slug:coll_slag>/",
         CollectionDetail.as_view(),
         name="collections-detail"
     ),
+
     path("findings/", FindingsList.as_view(), name="findings"),
     path(
         "findings/<int:pk>/",

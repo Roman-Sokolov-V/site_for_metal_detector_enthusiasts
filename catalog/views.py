@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpRequest
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views import generic
 
 from catalog.form import CustomUserCreationForm
@@ -56,13 +56,10 @@ class UserUpdate(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
         return self.request.user == user or self.request.user.is_superuser
 
     def handle_no_permission(self):
-        # Якщо користувач неавторизований, перенаправляємо на сторінку логіну
         if not self.request.user.is_authenticated:
-            return redirect(reverse_lazy("login"))  # замініть "login" на ім'я вашої URL-сторінки логіну
-
-        # Якщо авторизований користувач не має доступу, показуємо повідомлення і перенаправляємо
+            return redirect(reverse_lazy("login"))
         messages.error(self.request, "only the account owner and superuser can edit this page")
-        return redirect(reverse("catalog:comrades-detail", kwargs={"pk": self.get_object().pk}))
+        return redirect(reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.get_object().pk}))
 
 
 
@@ -82,6 +79,22 @@ class CollectionDetail(generic.DetailView):
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related("findings")
         return queryset
+
+
+class CollectionCreate(LoginRequiredMixin, generic.CreateView):
+    model = Collection
+    fields = "__all__"
+    success_url = reverse_lazy("catalog:collections")
+
+
+class CollectionUpdate(LoginRequiredMixin, generic.UpdateView):
+    model = Collection
+    fields = "__all__"
+    success_url = reverse_lazy("catalog:collections")
+
+
+
+
 
 
 class FindingsList(generic.ListView):
