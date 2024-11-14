@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
 
-from catalog.form import CustomUserCreationForm
+from catalog.form import CustomUserCreationForm, FindingCreationForm
 from catalog.models import Finding, Collection
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -94,9 +94,6 @@ class CollectionUpdate(LoginRequiredMixin, generic.UpdateView):
 
 
 
-
-
-
 class FindingsList(generic.ListView):
     model = Finding
     paginate_by = 1
@@ -111,3 +108,14 @@ class FindingsDetail(generic.DetailView):
         ).select_related("user").all()
         return queryset
 
+class FindingsCreate(LoginRequiredMixin, generic.CreateView):
+    model = Finding
+    form_class = FindingCreationForm
+    success_url = reverse_lazy("catalog:findings")
+
+    def get_form_kwargs(self):
+        # Отримуємо всі аргументи, передані в форму
+        kwargs = super().get_form_kwargs()
+        # Додаємо поточного користувача в аргументи
+        kwargs['user'] = self.request.user
+        return kwargs

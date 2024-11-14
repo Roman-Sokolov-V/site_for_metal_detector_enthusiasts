@@ -12,6 +12,7 @@ from catalog.views import (
     CollectionUpdate,
     FindingsList,
     FindingsDetail,
+    FindingsCreate,
 )
 
 
@@ -39,4 +40,5 @@ urlpatterns = [
         FindingsDetail.as_view(),
         name="findings-detail"
     ),
+    path("findings/create", FindingsCreate.as_view(), name="findings-create"),
     ]

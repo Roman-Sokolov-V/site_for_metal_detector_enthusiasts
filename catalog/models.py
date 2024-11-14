@@ -25,8 +25,6 @@ class Finding(models.Model):
     description = models.TextField(blank=True, null=True)
     location = models.TextField(blank=True, null=True)
     date_found = models.DateField(blank=True, null=True)
-    rating = models.IntegerField(null=True, blank=True,
-    choices=RATING_CHOICES)
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="findings")
     collections = models.ManyToManyField("Collection", related_name="findings", blank= True)
     created_at = models.DateTimeField(auto_now_add=True,)
@@ -34,7 +32,7 @@ class Finding(models.Model):
     class Meta:
         verbose_name = "Finding"
         verbose_name_plural = "Findings"
-        ordering = ("-date_found", "-rating")
+        ordering = ("-date_found",)
 
     def __str__(self):
         return f"{self.name}"
@@ -55,7 +53,7 @@ class Collection(models.Model):
 
 class Image(models.Model):
     finding = models.ForeignKey(Finding, on_delete=models.CASCADE, related_name="images")
-    image_url = models.URLField(blank=True, null=True)
+    photo = models.ImageField(upload_to="findings_photo/", null=True, blank=True)
 
     class Meta:
         verbose_name = "Image"

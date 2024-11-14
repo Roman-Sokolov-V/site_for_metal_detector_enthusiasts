@@ -13,8 +13,8 @@ class ComradAdmin(UserAdmin):
 
 @admin.register(Finding)
 class FindingAdmin(admin.ModelAdmin):
-    list_display = ("name", "user", "location", "date_found", "rating",)
-    list_filter = ("collections", "user", "location", "date_found", "rating",)
+    list_display = ("name", "user", "location", "date_found", )
+    list_filter = ("collections", "user", "location", "date_found",)
     search_fields = ("name", "location", "description")
 
 @admin.register(Feedback)

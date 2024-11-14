@@ -2,8 +2,8 @@
 
 {% block content %}
   
-  <h1>{{ object|yesno:"Update,Create" }} Collection</h1>
-  <form action="" method="post" >
+  <h1>{{ object|yesno:"Update,Create" }} Finding</h1>
+  <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">{{ object|yesno:"Update,Register" }}</button>

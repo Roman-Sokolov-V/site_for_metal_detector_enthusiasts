@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
   <h1> Our findings</h1>
+  <a href="{% url 'catalog:findings-create' %}">Add new</a>
   {% for finding in finding_list.all %}
     <li>
       <a href="{% url 'catalog:findings-detail' pk=finding.pk %}"
