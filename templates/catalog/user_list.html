@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+  
   <ul> Ower comrades</ul>
   {% for user in user_list.all %}
     <li><a href="{% url 'catalog:comrades-detail' pk=user.pk %}"

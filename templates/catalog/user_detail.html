@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
+  
   <h1>Comrad aka {{ user.username  }}</h1>
-  <a href="{% url 'catalog:comrades-update' pk=user.pk %}">Update 
+  {% if messages %}
+    <ul class="messages" style="background-color: red">
+        {% for message in messages %}
+            <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+  {% else %} 
+     <a href="{% url 'catalog:comrades-update' pk=user.pk %}">Update 
     information</a>
+  {% endif %}
+ 
   <p>Email: {{ user.email }}</p>
   <p>Date Joined: {{ user.date_joined }}</p>
   <p>Last Login: {{ user.last_login }}</p>

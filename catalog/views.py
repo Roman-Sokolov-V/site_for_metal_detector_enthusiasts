@@ -1,11 +1,12 @@
-import django.contrib.auth
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpRequest
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 
+from catalog.form import CustomUserCreationForm
 from catalog.models import Finding, Collection
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -36,8 +37,7 @@ class UserDetail(generic.DetailView):
 
 class UserCreate(UserPassesTestMixin, generic.CreateView):
     model = get_user_model()
-    fields = ("username", "password", "first_name",
-              "last_name", "detector_model")
+    form_class = CustomUserCreationForm
     success_url = reverse_lazy("catalog:comrades")
 
     def test_func(self):
@@ -46,7 +46,7 @@ class UserCreate(UserPassesTestMixin, generic.CreateView):
 
 
 
-class UserUpdate(LoginRequiredMixin, generic.UpdateView):
+class UserUpdate(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = get_user_model()
     fields = ("first_name", "last_name", "detector_model", "photo")
     success_url = reverse_lazy("catalog:comrades")
@@ -54,6 +54,15 @@ class UserUpdate(LoginRequiredMixin, generic.UpdateView):
     def test_func(self):
         user = self.get_object()
         return self.request.user == user or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        # Якщо користувач неавторизований, перенаправляємо на сторінку логіну
+        if not self.request.user.is_authenticated:
+            return redirect(reverse_lazy("login"))  # замініть "login" на ім'я вашої URL-сторінки логіну
+
+        # Якщо авторизований користувач не має доступу, показуємо повідомлення і перенаправляємо
+        messages.error(self.request, "only the account owner and superuser can edit this page")
+        return redirect(reverse("catalog:comrades-detail", kwargs={"pk": self.get_object().pk}))
 
 
 
