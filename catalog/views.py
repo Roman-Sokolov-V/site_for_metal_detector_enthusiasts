@@ -5,9 +5,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
+from django.db.models import Avg
 
 from catalog.form import CustomUserCreationForm, FindingCreationForm
-from catalog.models import Finding, Collection
+from catalog.models import Finding, Collection, Image
+
 
 def index(request: HttpRequest) -> HttpResponse:
     num_findings = Finding.objects.count()
@@ -107,6 +109,13 @@ class FindingsDetail(generic.DetailView):
             "images", "collections", "feedbacks",
         ).select_related("user").all()
         return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        finding = self.get_object()
+        average_rating = finding.feedbacks.aggregate(Avg("rating"))["rating__avg"] or 0
+        context["average_rating"] = round(average_rating, 1)
+        return context
+
 
 class FindingsCreate(LoginRequiredMixin, generic.CreateView):
     model = Finding
@@ -119,3 +128,26 @@ class FindingsCreate(LoginRequiredMixin, generic.CreateView):
         # Додаємо поточного користувача в аргументи
         kwargs['user'] = self.request.user
         return kwargs
+
+class FindingsUpdate(LoginRequiredMixin, generic.UpdateView):
+    model = Finding
+    form_class = FindingCreationForm
+    success_url = reverse_lazy("catalog:findings")
+
+    def get_form_kwargs(self):
+        # Отримуємо всі аргументи, передані в форму
+        kwargs = super().get_form_kwargs()
+        # Додаємо поточного користувача в аргументи
+        kwargs['user'] = self.request.user
+        return kwargs
+
+class ImageCreate(LoginRequiredMixin, generic.CreateView):
+    model = Image
+    fields = "__all__"
+    success_url = reverse_lazy("catalog:findings")
+
+    def get_success_url(self):
+        # Отримуємо попередню URL-адресу з заголовка HTTP_REFERER
+        previous_url = self.request.META.get("HTTP_REFERER")
+        # Якщо попередня URL-адреса існує, використовуємо її, інакше використовуємо резервну
+        return previous_url if previous_url else super().get_success_url()

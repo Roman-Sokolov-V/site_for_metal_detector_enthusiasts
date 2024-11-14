@@ -1,22 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
   <h1>Name: {{ finding.name }}</h1>
+  <a href="{% url 'catalog:findings-update' pk=finding.pk %}">Update</a>
   <p>Description: {{ finding.description }}</p>
   <p>Location: {{ finding.location }}</p>
   <p>Date found: {{ finding.date_found }}</p>
-  <p>rating: {{ finding.rating }}</p>
+  
+  <p>rating: {{ finding.average_rating }}</p>
+  
+  
   <p>created_at: {{ finding.created_at }}</p>  
-  <p>Comrad {{ finding.user }} found it
+  <p>Comrade {{ finding.user }} found it
     {% if finding.user.detector_model %}
       with {{ finding.user.detector_model }}
     {% endif %}
   </p>
    
   
- <ul>Images: 
+ <ul>Images:  <a href="{% url 'catalog:image-create' %}">Add new image</a>
   {% for image in finding.images.all %}
     <li>      
-      <img src="{{ image.image_url }}" alt="Image for {{ finding.name }}">
+      <img src="{{ image.photo.url }}" alt="Image {{ image.pk }}" style="width: 90%; height: auto;">
     </li>
   {% endfor %}  
 </ul>
