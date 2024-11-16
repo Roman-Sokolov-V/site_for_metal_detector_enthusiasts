@@ -46,12 +46,26 @@ class UserCreateView(UserPassesTestMixin, generic.CreateView):
         return not self.request.user.is_authenticated
 
 
-
-
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = get_user_model()
     fields = ("first_name", "last_name", "detector_model", "photo")
     success_url = reverse_lazy("catalog:comrades")
+
+    def test_func(self):
+        user = self.get_object()
+        return self.request.user == user or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect(reverse_lazy("login"))
+        messages.error(self.request, "only the account owner and superuser can edit this page")
+        return redirect(reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.get_object().pk}))
+
+
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = get_user_model()
+    success_url = reverse_lazy("catalog:comrades")
+    template_name = "catalog/confirm_delete.html"
 
     def test_func(self):
         user = self.get_object()
