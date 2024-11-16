@@ -26,18 +26,18 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "catalog/index.html", context=context)
 
 
-class UserList(generic.ListView):
+class UserListView(generic.ListView):
     model = get_user_model()
     paginate_by = 5
 
-class UserDetail(generic.DetailView):
+class UserDetailView(generic.DetailView):
     model = get_user_model()
 
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related("findings").all()
         return queryset
 
-class UserCreate(UserPassesTestMixin, generic.CreateView):
+class UserCreateView(UserPassesTestMixin, generic.CreateView):
     model = get_user_model()
     form_class = CustomUserCreationForm
     success_url = reverse_lazy("catalog:comrades")
@@ -48,7 +48,7 @@ class UserCreate(UserPassesTestMixin, generic.CreateView):
 
 
 
-class UserUpdate(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = get_user_model()
     fields = ("first_name", "last_name", "detector_model", "photo")
     success_url = reverse_lazy("catalog:comrades")
@@ -65,7 +65,7 @@ class UserUpdate(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
 
 
 
-class CollectionList(generic.ListView):
+class CollectionListView(generic.ListView):
     model = Collection
     paginate_by = 5
 
@@ -73,7 +73,7 @@ class CollectionList(generic.ListView):
         queryset = super().get_queryset().prefetch_related("findings")
         return queryset
 
-class CollectionDetail(generic.DetailView):
+class CollectionDetailView(generic.DetailView):
     model = Collection
     slug_field = "name"
     slug_url_kwarg = "coll_slag"
@@ -83,25 +83,32 @@ class CollectionDetail(generic.DetailView):
         return queryset
 
 
-class CollectionCreate(LoginRequiredMixin, generic.CreateView):
+class CollectionCreateView(LoginRequiredMixin, generic.CreateView):
     model = Collection
     fields = "__all__"
     success_url = reverse_lazy("catalog:collections")
 
 
-class CollectionUpdate(LoginRequiredMixin, generic.UpdateView):
+class CollectionUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Collection
     fields = "__all__"
     success_url = reverse_lazy("catalog:collections")
 
 
+class CollectionDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Collection
+    template_name = "catalog/confirm_delete.html"
+    success_url = reverse_lazy("catalog:collections")
 
-class FindingsList(generic.ListView):
+
+
+
+class FindingsListView(generic.ListView):
     model = Finding
     paginate_by = 5
 
 
-class FindingsDetail(generic.DetailView):
+class FindingsDetailView(generic.DetailView):
     model = Finding
 
     def get_queryset(self):
@@ -117,7 +124,7 @@ class FindingsDetail(generic.DetailView):
         return context
 
 
-class FindingsCreate(LoginRequiredMixin, generic.CreateView):
+class FindingsCreateView(LoginRequiredMixin, generic.CreateView):
     model = Finding
     form_class = FindingCreationForm
     success_url = reverse_lazy("catalog:findings")
@@ -129,7 +136,7 @@ class FindingsCreate(LoginRequiredMixin, generic.CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-class FindingsUpdate(LoginRequiredMixin, generic.UpdateView):
+class FindingsUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Finding
     form_class = FindingCreationForm
     success_url = reverse_lazy("catalog:findings")
@@ -148,13 +155,13 @@ class FindingsDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 
 
-class ImageCreate(LoginRequiredMixin, generic.CreateView):
+class ImageCreateView(LoginRequiredMixin, generic.CreateView):
     model = Image
     fields = "__all__"
     success_url = reverse_lazy("catalog:findings")
 
 
-class ImageDelete(LoginRequiredMixin, generic.DeleteView):
+class ImageDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Image
     template_name = "catalog/confirm_delete.html"
     success_url = reverse_lazy("catalog:findings")

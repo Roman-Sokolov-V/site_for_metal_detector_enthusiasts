@@ -3,6 +3,14 @@
   <h1> Our collections</h1>
   <a href="{% url 'catalog:collections-create' %}">Create new collection</a>
   {% for collection in collection_list.all %}
-    <li><a href="{% url 'catalog:collections-detail' coll_slag=collection.name %}">{{ collection.name }}</a> This collection has {{ collection.findings.count }} items</li>
+    <li>
+      <a href="{% url 'catalog:collections-detail' coll_slag=collection.name %}">
+        {{ collection.name }}
+      </a>
+      This collection has {{ collection.findings.count }} items
+      <a href="{% url 'catalog:collections-delete' pk=collection.pk %}">
+        delete {{ collection.name }}
+      </a>
+    </li>
   {% endfor %}
 {% endblock %}
