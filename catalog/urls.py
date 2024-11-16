@@ -14,7 +14,9 @@ from catalog.views import (
     FindingsDetail,
     FindingsCreate,
     FindingsUpdate,
+    FindingsDelete,
     ImageCreate,
+    ImageDelete,
 )
 
 
@@ -44,5 +46,7 @@ urlpatterns = [
     ),
     path("findings/create", FindingsCreate.as_view(), name="findings-create"),
     path("findings/<int:pk>/update/", FindingsUpdate.as_view(), name="findings-update"),
+    path("findings/<int:pk>/delele/", FindingsDelete.as_view(), name="findings-delete"),
     path("image/create/", ImageCreate.as_view(), name="image-create"),
+    path("image/<int:pk>/delele/", ImageDelete.as_view(), name="image-delete"),
     ]

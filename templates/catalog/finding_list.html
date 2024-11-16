@@ -5,7 +5,7 @@
   {% for finding in finding_list.all %}
     <li>
       <a href="{% url 'catalog:findings-detail' pk=finding.pk %}"
-      >{{ finding.name }}</a>
+      >watch {{ finding.name }}</a> or<a href="{% url 'catalog:findings-delete' pk=finding.pk %}"> delete </a>
     </li>
   {% endfor %}  
 {% endblock %}

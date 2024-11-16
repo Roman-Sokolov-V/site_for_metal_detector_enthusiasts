@@ -21,6 +21,7 @@
   {% for image in finding.images.all %}
     <li>      
       <img src="{{ image.photo.url }}" alt="Image {{ image.pk }}" style="width: 90%; height: auto;">
+      <a href="{% url 'catalog:image-delete' pk=image.pk %}" class="btn btn-default">Delete this photo</a>
     </li>
   {% endfor %}  
 </ul>

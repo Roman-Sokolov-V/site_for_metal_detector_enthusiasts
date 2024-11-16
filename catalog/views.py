@@ -28,7 +28,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 class UserList(generic.ListView):
     model = get_user_model()
-    paginate_by = 1
+    paginate_by = 5
 
 class UserDetail(generic.DetailView):
     model = get_user_model()
@@ -67,7 +67,7 @@ class UserUpdate(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
 
 class CollectionList(generic.ListView):
     model = Collection
-    paginate_by = 1
+    paginate_by = 5
 
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related("findings")
@@ -98,7 +98,7 @@ class CollectionUpdate(LoginRequiredMixin, generic.UpdateView):
 
 class FindingsList(generic.ListView):
     model = Finding
-    paginate_by = 1
+    paginate_by = 5
 
 
 class FindingsDetail(generic.DetailView):
@@ -141,13 +141,22 @@ class FindingsUpdate(LoginRequiredMixin, generic.UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+class FindingsDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Finding
+    template_name = "catalog/confirm_delete.html"
+    success_url = reverse_lazy("catalog:findings")
+
+
+
 class ImageCreate(LoginRequiredMixin, generic.CreateView):
     model = Image
     fields = "__all__"
     success_url = reverse_lazy("catalog:findings")
 
-    def get_success_url(self):
-        # Отримуємо попередню URL-адресу з заголовка HTTP_REFERER
-        previous_url = self.request.META.get("HTTP_REFERER")
-        # Якщо попередня URL-адреса існує, використовуємо її, інакше використовуємо резервну
-        return previous_url if previous_url else super().get_success_url()
+
+class ImageDelete(LoginRequiredMixin, generic.DeleteView):
+    model = Image
+    template_name = "catalog/confirm_delete.html"
+    success_url = reverse_lazy("catalog:findings")
+
+

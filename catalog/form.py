@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
 
-from catalog.models import User, Finding
+from catalog.models import User, Finding, Image
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -23,3 +23,4 @@ class FindingCreationForm(forms.ModelForm):
         if user:
             self.fields['user'].initial = user
             self.fields['user'].widget = forms.HiddenInput()
+
