@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "catalog",
     "django_extensions",
     "debug_toolbar",
+    "crispy_forms",
+    "crispy_bootstrap4",
 ]
 
 MIDDLEWARE = [
@@ -139,3 +141,5 @@ MEDIA_ROOT = BASE_DIR / "media"
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"

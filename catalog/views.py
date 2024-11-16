@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Avg
 
-from catalog.form import CustomUserCreationForm, FindingCreationForm
+from catalog.form import CustomUserCreationForm, FindingCreationForm, UserSerchForm
 from catalog.models import Finding, Collection, Image
 
 
@@ -25,10 +25,37 @@ def index(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "catalog/index.html", context=context)
 
+########################################################################
 
 class UserListView(generic.ListView):
     model = get_user_model()
-    paginate_by = 5
+    paginate_by = 3
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        username = self.request.GET.get("username", "")
+        context["search_form"] = UserSerchForm(
+            initial={"username": username},
+        )
+
+        return context
+
+    def get_queryset(self):
+        username = self.request.GET.get("username")
+        if username:
+            return super().get_queryset().filter(username__icontains=username)
+        return super().get_queryset()
+
+
+
+
+
+
+
+
+
+
+
 
 class UserDetailView(generic.DetailView):
     model = get_user_model()
@@ -77,7 +104,7 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         messages.error(self.request, "only the account owner and superuser can edit this page")
         return redirect(reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.get_object().pk}))
 
-
+#########################################################################################################
 
 class CollectionListView(generic.ListView):
     model = Collection
