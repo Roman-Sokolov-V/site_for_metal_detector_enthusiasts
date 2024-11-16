@@ -33,3 +33,11 @@ class FindingCreationForm(forms.ModelForm):
             self.fields['user'].initial = user
             self.fields['user'].widget = forms.HiddenInput()
 
+
+class FindingSerchForm(forms.Form):
+    name = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
+    )

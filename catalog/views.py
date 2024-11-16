@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Avg
 
-from catalog.form import CustomUserCreationForm, FindingCreationForm, UserSerchForm
+from catalog.form import CustomUserCreationForm, FindingCreationForm, UserSerchForm, FindingSerchForm
 from catalog.models import Finding, Collection, Image
 
 
@@ -142,11 +142,28 @@ class CollectionDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("catalog:collections")
 
 
-
+#####################################################################
 
 class FindingsListView(generic.ListView):
     model = Finding
-    paginate_by = 5
+    paginate_by = 3
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        name = self.request.GET.get("name", "")
+        context["search_form"] = FindingSerchForm(
+            initial={"name": name},
+        )
+        return context
+
+    def get_queryset(self):
+        name = self.request.GET.get("name")
+        if name:
+            return super().get_queryset().filter(name__icontains=name)
+        return super().get_queryset()
+
+
 
 
 class FindingsDetailView(generic.DetailView):
