@@ -60,7 +60,7 @@ class Image(models.Model):
         verbose_name_plural = "Images"
 
     def __str__(self):
-        return f"image {self.finding.name}  id: {self.pk}"
+        return f"image {self.finding.name} id: {self.pk}"
 
 
 

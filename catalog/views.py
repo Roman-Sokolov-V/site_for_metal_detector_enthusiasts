@@ -37,7 +37,6 @@ class UserListView(generic.ListView):
         context["search_form"] = UserSerchForm(
             initial={"username": username},
         )
-
         return context
 
     def get_queryset(self):
@@ -45,16 +44,6 @@ class UserListView(generic.ListView):
         if username:
             return super().get_queryset().filter(username__icontains=username)
         return super().get_queryset()
-
-
-
-
-
-
-
-
-
-
 
 
 class UserDetailView(generic.DetailView):
