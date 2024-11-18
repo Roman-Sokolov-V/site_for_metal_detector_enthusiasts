@@ -1,14 +1,15 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpRequest
+from django.shortcuts import render, redirect, reverse
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.template.context_processors import request
 from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Avg
 
-from catalog.form import CustomUserCreationForm, FindingCreationForm, UserSerchForm, FindingSerchForm
-from catalog.models import Finding, Collection, Image
+from catalog.form import CustomUserCreationForm, FindingCreationForm, UserSerchForm, FindingSerchForm, FeedbackForm
+from catalog.models import Finding, Collection, Image, Feedback
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -163,12 +164,38 @@ class FindingsDetailView(generic.DetailView):
             "images", "collections", "feedbacks",
         ).select_related("user").all()
         return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         finding = self.get_object()
         average_rating = finding.feedbacks.aggregate(Avg("rating"))["rating__avg"] or 0
         context["average_rating"] = round(average_rating, 1)
+        reviewer = self.request.user
+        context["feedback_form"] = FeedbackForm(
+            initial={"reviewer": reviewer, "finding": finding},
+        )
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()  # Отримання поточного об'єкта
+        form = FeedbackForm(request.POST)
+
+        if form.is_valid():
+            form.save()  # Збереження даних у базу
+            return HttpResponseRedirect(
+                reverse("catalog:findings-detail", kwargs={"pk": self.object.pk})
+            )
+        else:
+            # Якщо форма недійсна, повертаємо її з помилками
+            context = self.get_context_data()
+            context["feedback_form"] = form
+            return self.render_to_response(context)
+
+
+
+
+
+
 
 
 class FindingsCreateView(LoginRequiredMixin, generic.CreateView):
@@ -214,3 +241,7 @@ class ImageDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("catalog:findings")
 
 
+def feedbacks_to_finding_view(request: HttpRequest, pk) -> HttpResponse:
+    feedbacks = Feedback.objects.filter(finding__exact=pk)
+    context = {"feedbacks": feedbacks}
+    return render(request, "catalog/feedbacks_list.html", context=context)

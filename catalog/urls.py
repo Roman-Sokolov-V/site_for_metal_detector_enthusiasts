@@ -1,3 +1,4 @@
+from catalog.models import Feedback
 from django.urls import path
 
 from catalog.views import (
@@ -19,6 +20,7 @@ from catalog.views import (
     FindingsDeleteView,
     ImageCreateView,
     ImageDeleteView,
+    feedbacks_to_finding_view
 )
 
 
@@ -53,4 +55,5 @@ urlpatterns = [
     path("findings/<int:pk>/delele/", FindingsDeleteView.as_view(), name="findings-delete"),
     path("image/create/", ImageCreateView.as_view(), name="image-create"),
     path("image/<int:pk>/delele/", ImageDeleteView.as_view(), name="image-delete"),
+    path("feedbacks/<int:pk>/", feedbacks_to_finding_view, name="feedbacks"),
     ]

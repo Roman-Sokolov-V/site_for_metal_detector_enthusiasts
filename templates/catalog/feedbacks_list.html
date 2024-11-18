@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ feedbacks.first.finding }}</h2>
+  <ul>feedbacks: 
+    {% for feedback in feedbacks.all%}
+      <li>
+        from {{ feedback.reviewer }} at {{ feedback.created_at }}
+        <br>
+        {{ feedback.comment }}
+        <br>
+        {% if feedback.rating %}
+        rated as {{ feedback.rating }} points
+      {% endif %}      
+      </li>  
+    {% endfor %}  
+  </ul>
+{% endblock %}

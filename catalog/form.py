@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
 
-from catalog.models import User, Finding, Image
+from catalog.models import User, Finding, Image, Feedback
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -41,3 +41,24 @@ class FindingSerchForm(forms.Form):
         label="",
         widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
     )
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = "__all__"
+
+        widgets = {
+            "reviewer": forms.HiddenInput(),
+            "finding": forms.HiddenInput(),
+            "comment": forms.TextInput(
+                attrs={
+                    "placeholder": "Add a comment",
+                   # "size": "40"
+                },
+
+            ),
+        }
+        labels = {
+            "comment": "",
+            "rating": "Rate",
+        }

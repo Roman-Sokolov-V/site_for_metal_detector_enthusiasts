@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 {% block content %}
   <h1>Name: {{ finding.name }}</h1>
   <a href="{% url 'catalog:findings-update' pk=finding.pk %}">Update</a>
@@ -6,11 +7,11 @@
   <p>Location: {{ finding.location }}</p>
   <p>Date found: {{ finding.date_found }}</p>
   
-  <p>rating: {{ finding.average_rating }}</p>
+  <p>rating: {{ average_rating }}</p>
   
   
   <p>created_at: {{ finding.created_at }}</p>  
-  <p>Comrade {{ finding.user }} found it
+  <p>Comrade {{ finding.user }} found it 
     {% if finding.user.detector_model %}
       with {{ finding.user.detector_model }}
     {% endif %}
@@ -26,8 +27,8 @@
   {% endfor %}  
 </ul>
   
-  <ul>Feedbacks: 
-    {% for feedback in finding.feedbacks.all %}
+  <ul>Feedbacks (last 3 out of {{ finding.feedbacks.count }} are shown) : 
+    {% for feedback in finding.feedbacks.all|slice:":3"%}
     <li>
       from {{ feedback.reviewer }} at {{ feedback.created_at }}
       <br>
@@ -37,6 +38,13 @@
       rated as {{ feedback.rating }} points
     {% endif %}      
     </li>  
-  {% endfor %}  
+    {% endfor %}  
+  <a href="{% url 'catalog:feedbacks' pk=finding.pk %}">Show all feedbacks</a>
   </ul>
+  <p>Add feedback</p>
+  <form method="post" action="" class="form-inline">
+    {% csrf_token %}
+    {{ feedback_form|crispy }}    
+    <input type="submit" value="submit" class="btn btn-secondary">
+  </form>
 {% endblock %}
