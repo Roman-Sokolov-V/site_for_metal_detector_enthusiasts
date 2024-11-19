@@ -6,7 +6,7 @@ from  django.urls import reverse, reverse_lazy
 from catalog.models import Collection, Finding
 
 
-class CollectionCreateView(TestCase):
+class CollectionCreateViewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = get_user_model().objects.create_user(
@@ -21,7 +21,7 @@ class CollectionCreateView(TestCase):
         }
         response = self.client.post(url, data=data)
         self.assertNotEqual(response.status_code, 200)
-        self.assertFalse(Collection.objects.filter(name=data["name"]).exists())
+        self.assertFalse(Collection.objects.filter(**data).exists())
 
     def test_user_is_authenticated(self):
         self.client.force_login(self.user)
@@ -35,9 +35,9 @@ class CollectionCreateView(TestCase):
             response,
             reverse_lazy("catalog:collections")
         )
-        self.assertTrue(Collection.objects.filter(name=data["name"]).exists())
+        self.assertTrue(Collection.objects.filter(**data).exists())
 
-class CollectionUpdateView(TestCase):
+class CollectionUpdateViewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = get_user_model().objects.create_user(
@@ -67,7 +67,7 @@ class CollectionUpdateView(TestCase):
         #####################################################################
         self.assertTrue(Collection.objects.filter(description=data["description"]).exists())
 
-class CollectionDeleteView(TestCase):
+class CollectionDeleteViewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = get_user_model().objects.create_user(

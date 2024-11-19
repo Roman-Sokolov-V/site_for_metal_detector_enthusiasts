@@ -1,3 +1,5 @@
+from email.policy import default
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -25,13 +27,36 @@ class FindingCreationForm(forms.ModelForm):
     class Meta:
         model = Finding
         fields = "__all__"
+        widgets = {"user": forms.HiddenInput(),}
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
         if user:
             self.fields['user'].initial = user
-            self.fields['user'].widget = forms.HiddenInput()
+            self.fields["user"].disabled = True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class FindingSerchForm(forms.Form):

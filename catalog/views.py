@@ -191,23 +191,14 @@ class FindingsDetailView(generic.DetailView):
             context["feedback_form"] = form
             return self.render_to_response(context)
 
-
-
-
-
-
-
-
 class FindingsCreateView(LoginRequiredMixin, generic.CreateView):
     model = Finding
     form_class = FindingCreationForm
     success_url = reverse_lazy("catalog:findings")
 
     def get_form_kwargs(self):
-        # Отримуємо всі аргументи, передані в форму
         kwargs = super().get_form_kwargs()
-        # Додаємо поточного користувача в аргументи
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
         return kwargs
 
 class FindingsUpdateView(LoginRequiredMixin, generic.UpdateView):
