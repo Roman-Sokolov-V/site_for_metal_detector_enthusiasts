@@ -233,6 +233,6 @@ class ImageDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 
 def feedbacks_to_finding_view(request: HttpRequest, pk) -> HttpResponse:
-    feedbacks = Feedback.objects.filter(finding__exact=pk)
+    feedbacks = Feedback.objects.filter(finding=pk)
     context = {"feedbacks": feedbacks}
     return render(request, "catalog/feedbacks_list.html", context=context)

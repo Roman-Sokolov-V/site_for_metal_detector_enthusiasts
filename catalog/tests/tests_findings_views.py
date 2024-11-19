@@ -107,4 +107,3 @@ class FindingsCreateViewTests(TestCase):
             reverse_lazy("catalog:findings")
         )
         self.assertTrue(Finding.objects.filter(**data).exists())
-
