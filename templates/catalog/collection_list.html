@@ -4,7 +4,7 @@
   <a href="{% url 'catalog:collections-create' %}">Create new collection</a>
   {% for collection in collection_list.all %}
     <li>
-      <a href="{% url 'catalog:collections-detail' coll_slag=collection.name %}">
+      <a href="{% url 'catalog:collections-detail' pk=collection.pk %}">
         {{ collection.name }}
       </a>
       This collection has {{ collection.findings.count }} items

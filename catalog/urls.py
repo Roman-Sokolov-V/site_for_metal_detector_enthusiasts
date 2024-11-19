@@ -37,12 +37,12 @@ urlpatterns = [
     path("collections/create/", CollectionCreateView.as_view(), name="collections-create"),
     path("collections/<int:pk>/update/", CollectionUpdateView.as_view(), name="collections-update"),
     path("collections/", CollectionListView.as_view(), name="collections"),
+    path("collections/<int:pk>/delele/",  CollectionDeleteView.as_view(), name="collections-delete"),
     path(
-        "collections/<slug:coll_slag>/",
+        "collections/<int:pk>/",
         CollectionDetailView.as_view(),
         name="collections-detail"
     ),
-    path("collections/<int:pk>/delele/",  CollectionDeleteView.as_view(), name="collections-delete"),
 
     path("findings/", FindingsListView.as_view(), name="findings"),
     path(
