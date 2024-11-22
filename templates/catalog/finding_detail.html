@@ -1,50 +1,111 @@
-{% extends "base.html" %}
-{% load crispy_forms_filters %}
+{% extends "layouts/base-presentation.html" %}
+
+{% block title %} Presentation {% endblock title %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} Users-page {% endblock body_class %}
+{% load crispy_forms_tags %}
 {% block content %}
-  <h1>Name: {{ finding.name }}</h1>
-  <a href="{% url 'catalog:findings-update' pk=finding.pk %}">Update</a>
-  <p>Description: {{ finding.description }}</p>
-  <p>Location: {{ finding.location }}</p>
-  <p>Date found: {{ finding.date_found }}</p>
   
-  <p>rating: {{ average_rating }}</p>
+  <header class="header-2">
+    <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
+      <div class="container"> 
+          <div class="col-lg-7  mx-auto">
+            <h1 class="text-white">Name: {{ finding.name }}</h1>
+            <a href="{% url 'catalog:findings-update' pk=finding.pk %}">Update</a>
+            <p>Description: {{ finding.description }}</p>           
+          </div>
+      
+      
+        <div class="row">
+        
+          <div class="col-3 text-white">
+            <p>Location: {{ finding.location }}</p>
+            <p>Date found: {{ finding.date_found }}</p> 
+            <p>rating: {{ average_rating }}</p>  
+            <p>created_at: {{ finding.created_at }}</p>  
+            <p>Comrade {{ finding.user }} found it 
+              {% if finding.user.detector_model %}
+                with {{ finding.user.detector_model }}
+              {% endif %}
+            </p>
+          </div>      
+        
+          <div class="col-9">
+            <div id="Carousel1" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner">
+              {% for image in finding.images.all %}
+                <div style="max-height: 50vh; object-fit: cover;" class="carousel-item {% if forloop.first %}active{% endif %}">
+                  <img src="{{ image.photo.url }}" class="d-block w-100" alt="Image {{ image.pk }}">
+                  {% if request.user.is_staff or request.user == finding.user %}
+                    <div class="position-absolute bottom-0 start-50 translate-middle-x mb-3">
+                      <a href="{% url 'catalog:image-delete' pk=image.pk %}" class="btn btn-danger">Delete</a>
+                    </div>
+                  {% endif %}
+                </div>      
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#Carousel1" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#Carousel1" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>          
+          </div>
+        </div>
+        
+        {% if feedbacks %}
+          <ul>feedbacks: 
+            {% for feedback in feedbacks.all|slice:":3" %}
+              <li>
+                from {{ feedback.reviewer }} at {{ feedback.created_at }}
+                <br>
+                {{ feedback.comment }}
+                <br>
+                {% if feedback.rating %}
+                rated as {{ feedback.rating }} points
+              {% endif %}      
+              </li>  
+            {% endfor %}  
+          </ul>        
+         <a href="{% url 'catalog:feedbacks' pk=finding.pk %}">Show all feedbacks</a>
+        {% endif %}
+        
+        <p>Add feedback</p>          
+        <form method="post" >
+          {% csrf_token %}
+          <div class="d-flex"> 
+            {{ feedback_form|crispy }}            
+            <input type="submit" value="submit" class="btn btn-secondary">            
+          </div>
+        </form>      
+      </div>      
+    </div>
+    
+      <div class="position-absolute w-100  bottom-0">
+        <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+          <defs>
+            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+          </defs>
+          <g class="moving-waves">
+            <use xlink:href="#gentle-wave" x="48" y="-1" fill="rgba(255,255,255,0.40" />
+            <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.35)" />
+            <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.25)" />
+            <use xlink:href="#gentle-wave" x="48" y="8" fill="rgba(255,255,255,0.20)" />
+            <use xlink:href="#gentle-wave" x="48" y="13" fill="rgba(255,255,255,0.15)" />
+            <use xlink:href="#gentle-wave" x="48" y="16" fill="rgba(255,255,255,0.95" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </header> 
+ 
+    
   
+
   
-  <p>created_at: {{ finding.created_at }}</p>  
-  <p>Comrade {{ finding.user }} found it 
-    {% if finding.user.detector_model %}
-      with {{ finding.user.detector_model }}
-    {% endif %}
-  </p>
-   
-  
- <ul>Images:  <a href="{% url 'catalog:image-create' %}">Add new image</a>
-  {% for image in finding.images.all %}
-    <li>      
-      <img src="{{ image.photo.url }}" alt="Image {{ image.pk }}" style="width: 90%; height: auto;">
-      <a href="{% url 'catalog:image-delete' pk=image.pk %}" class="btn btn-default">Delete this photo</a>
-    </li>
-  {% endfor %}  
-</ul>
-  
-  <ul>Feedbacks (last 3 out of {{ finding.feedbacks.count }} are shown) : 
-    {% for feedback in finding.feedbacks.all|slice:":3"%}
-    <li>
-      from {{ feedback.reviewer }} at {{ feedback.created_at }}
-      <br>
-      {{ feedback.comment }}
-      <br>
-      {% if feedback.rating %}
-      rated as {{ feedback.rating }} points
-    {% endif %}      
-    </li>  
-    {% endfor %}  
-  <a href="{% url 'catalog:feedbacks' pk=finding.pk %}">Show all feedbacks</a>
-  </ul>
-  <p>Add feedback</p>
-  <form method="post" action="" class="form-inline">
-    {% csrf_token %}
-    {{ feedback_form|crispy }}    
-    <input type="submit" value="submit" class="btn btn-secondary">
-  </form>
 {% endblock %}

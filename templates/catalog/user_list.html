@@ -1,18 +1,74 @@
-{% extends "base.html" %}
+{% extends "layouts/base-presentation.html" %}
+
+{% block title %} Presentation {% endblock title %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} Users-page {% endblock body_class %}
 
 {% block content %}
   
-  <ul> Our comrades</ul>
-
-  {% include "includes/search_form.html" %}
+  <header class="header-2">
+    <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-7 text-center mx-auto">
+            <h1 class="text-white pt-3 mt-n5">
+              Our comrades
+            </h1>
+            {% include "includes/search_form.html" %} 
+          </div>
+        </div>
+          <div class="text-light">              
+                {% if user_list %}
+                  <table class="table text-light">
+                    <tr>        
+                      <th>Username</th>
+                      <th>Detector model</th>
+                      <th>Findings</th>
+                      <th>Remove</th>
+                    </tr>
+                  {% for user in page_obj %}
+                    <tr> 
+                      <td><a class="text-info" href="{% url 'catalog:comrades-detail' pk=user.pk %}">{{ user.username }}</a>
+                      <td>{{ user.detector_model }}</td>  
+                      <td>{{ user.findings.count }}</td>
+                      <td>
+                        <a class="text-light" href="{% url 'catalog:comrades-delete' pk=user.pk %}">
+                          <span style="font-size: 20px">🗑️</span>
+                        </a>          
+                      </td>            
+                    </tr>
+                  {% endfor %}
+              
+                  </table>
+                  {% else %}
+                    <p>There are no drivers in the service.</p>
+                {% endif %}
+          {% include "includes/pagination.html" %}
+          </div>          
+        </div>
+      </div>
   
-  {% for user in user_list.all %}
-    <li>
-      <a href="{% url 'catalog:comrades-detail' pk=user.pk %}">{{ user.username }}</a>
-      <br>
-      <a href="{% url 'catalog:comrades-delete' pk=user.pk %}">delete</a> {{ user.username }}
-    </li>
-  {% empty %}
-    <p> We don't have any comrades, yet.</p>
-  {% endfor %}
-{% endblock %}
+  
+      <div class="position-absolute w-100 z-index-1 bottom-0">
+        <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+          <defs>
+            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+          </defs>
+          <g class="moving-waves">
+            <use xlink:href="#gentle-wave" x="48" y="-1" fill="rgba(255,255,255,0.40" />
+            <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.35)" />
+            <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.25)" />
+            <use xlink:href="#gentle-wave" x="48" y="8" fill="rgba(255,255,255,0.20)" />
+            <use xlink:href="#gentle-wave" x="48" y="13" fill="rgba(255,255,255,0.15)" />
+            <use xlink:href="#gentle-wave" x="48" y="16" fill="rgba(255,255,255,0.95" />
+          </g>
+        </svg>
+    </div>    
+  </header>
+
+{% endblock content %}
+
+

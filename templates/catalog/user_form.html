@@ -1,6 +1,23 @@
-{% extends "base.html" %}
-
+{% extends 'layouts/base-presentation.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
+<section>
+  <div class="container py-4">
+    <div class="row">
+      <div class="col-lg-7 mx-auto d-flex justify-content-center flex-column">
+        <h3 class="text-center">Contact us</h3>
+        <h1>{{ object|yesno:"Update information,Registration" }}</h1>
+  <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit">{{ object|yesno:"Update,Register" }}</button>
+  </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
   
   <h1>{{ object|yesno:"Update information,Registration" }}</h1>
   <form action="" method="post" enctype="multipart/form-data">

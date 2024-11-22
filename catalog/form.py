@@ -40,25 +40,6 @@ class FindingCreationForm(forms.ModelForm):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class FindingSerchForm(forms.Form):
     name = forms.CharField(
         max_length=255,
@@ -71,19 +52,24 @@ class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = "__all__"
-
         widgets = {
             "reviewer": forms.HiddenInput(),
             "finding": forms.HiddenInput(),
-            "comment": forms.TextInput(
+            "rating": forms.Select(
+                attrs={
+                    "class": "form-control w-auto",
+                },
+            ),
+            "comment": forms.Textarea(
                 attrs={
                     "placeholder": "Add a comment",
-                   # "size": "40"
+                    "cols": "2000",
+                    "rows": "1",
                 },
 
             ),
         }
         labels = {
             "comment": "",
-            "rating": "Rate",
+            "rating": "",
         }
