@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
 
-from catalog.models import User, Finding, Image, Feedback
+from catalog.models import User, Finding, Image, Feedback, Collection
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -27,7 +27,20 @@ class FindingCreationForm(forms.ModelForm):
     class Meta:
         model = Finding
         fields = "__all__"
-        widgets = {"user": forms.HiddenInput(),}
+        widgets = {
+            "user": forms.HiddenInput(),
+            "name": forms.TextInput(attrs={"placeholder": "Name"}),
+            "description": forms.Textarea(attrs={"placeholder": "Description"}),
+            "location": forms.TextInput(attrs={"placeholder": "Location"}),
+            "date_found": forms.DateInput(attrs={'type': 'date'}),
+        }
+        labels = {
+            "name": "",
+            "description": "",
+            "location": "",
+            "date_found": "",
+            "collections": "",
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -36,8 +49,6 @@ class FindingCreationForm(forms.ModelForm):
         if user:
             self.fields['user'].initial = user
             self.fields["user"].disabled = True
-
-
 
 
 class FindingSerchForm(forms.Form):

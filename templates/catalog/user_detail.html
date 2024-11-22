@@ -1,30 +1,90 @@
-{% extends "base.html" %}
+{% extends "layouts/base-presentation.html" %}
+
+{% block title %} Presentation {% endblock title %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} Users-page {% endblock body_class %}
+
 {% block content %}
   
-  <h1>Comrad aka {{ user.username  }}</h1>
-  {% if messages %}
-    <ul class="messages" style="background-color: red">
-        {% for message in messages %}
-            <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-  {% else %} 
-     <a href="{% url 'catalog:comrades-update' pk=user.pk %}">Update 
-    information</a>
-  {% endif %}
- 
-  <p>Email: {{ user.email }}</p>
-  <p>Date Joined: {{ user.date_joined }}</p>
-  <p>Last Login: {{ user.last_login }}</p>
-  <p>Number of Findings: {{ user.findings.count }}</p>
-  <p>Date joined: {{ user.date_joined }}</p>
-  <p>Uses metal detector: {{ user.detector_model }}</p>
+  <header class="header-2">
+    <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
+      <div class="container "> 
+        <div class="col-lg-7 text-center mx-auto">
+          <br><br>
+          <h1 class="text-white pt-3 mt-n5">
+            Comrad aka: {{ user.username }}
+          </h1>
+          <br><br>
+        
+          {% if messages %}
+            <ul class="messages" style="background-color: red">
+              {% for message in messages %}
+                <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            {% if request.user.is_staff or request.user == user %}
+              <a class="text-info" href="{% url 'catalog:comrades-update' pk=user.pk %}">
+                Update information
+              </a>
+            {% endif %}
+          {% endif %}          
+        </div>
+      
+      
+        <div class="row">
+          <div class="col-2 text-white"></div>
+        
+          <div class="col-4 text-white">
+            {% if user.first_name  %}
+              <p>First name: {{ user.first_name }}</p>
+            {% endif %}
+            {% if user.last_name  %}
+              <p>Last name: {{ user.first_name }}</p>
+            {% endif %}
+            {% if user.email  %}
+              <p>Email: {{ user.email }}</p>
+            {% endif %}
+            <p>Number of Findings: {{ user.findings.count }}</p>
+            <p>Date Joined: {{ user.date_joined }}</p>
+            <p>Last Login: {{ user.last_login }}</p>            
+            <p>Date joined: {{ user.date_joined }}</p>
+            {% if user.detector_model  %}
+              <p>Detector model: {{ user.detector_model }}</p>
+            {% endif %}
 
-  {% if user.photo %}
-    <img src="{{ user.photo.url }}" alt="{{ user.username }}'s photo" 
-         width="400" height="300">
-  {% else %}
-    <p>No photo available.</p>
-  {% endif %}   
+          </div>      
+        
+          <div class="col-6 ">
+            {% if user.photo %}
+              <img src="{{ user.photo.url }}" alt="{{ user.username }}'s photo" style="max-width: 80%; max-height: 80%;">
+            {% else %}
+              <p>No photo available.</p>
+            {% endif %}   
+          </div>
+        </div>        
+      </div>
+
+      <div class="position-absolute w-100   bottom-0">
+        <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+          <defs>
+            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+          </defs>
+          <g class="moving-waves">
+            <use xlink:href="#gentle-wave" x="48" y="-1" fill="rgba(255,255,255,0.40" />
+            <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.35)" />
+            <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.25)" />
+            <use xlink:href="#gentle-wave" x="48" y="8" fill="rgba(255,255,255,0.20)" />
+            <use xlink:href="#gentle-wave" x="48" y="13" fill="rgba(255,255,255,0.15)" />
+            <use xlink:href="#gentle-wave" x="48" y="16" fill="rgba(255,255,255,0.95" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </header>
+  
 {% endblock %}
   

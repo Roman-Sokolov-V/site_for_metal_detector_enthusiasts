@@ -42,7 +42,9 @@
                   {% else %}
                     <p>There are no drivers in the service.</p>
                 {% endif %}
-                <a class="text-info" href="{% url 'catalog:collections-create' %}">Create new collection</a>  
+                {% if request.user.is_staff %}
+                  <a class="text-info" href="{% url 'catalog:collections-create' %}">Create new collection</a>  
+                {% endif %}
           {% include "includes/pagination.html" %}
           </div>
       </div>

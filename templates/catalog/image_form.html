@@ -1,20 +1,58 @@
-{% extends "base.html" %}
+{% extends "layouts/base-presentation.html" %}
 
+{% block title %} Presentation {% endblock title %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} Users-page {% endblock body_class %}
+{% load crispy_forms_tags %}
 {% block content %}
   
-  <h1>Add image</h1>
-  <form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-     {% if form.non_field_errors %}
-        <ul>
-            {% for error in form.non_field_errors %}
+  <header class="header-2">
+    <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
+      <div class="container"> 
+        <div class="col-lg-10   mx-auto">
+          <h1 class="text-center text-white">Add image</h1>
+          <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div  class="text-white">
+              {{ form|crispy }}
+              <ul>
+              {% for error in form.non_field_errors %}
                 <li>{{ error }}</li>
-            {% endfor %}
+              {% endfor %}
         </ul>
-    {% endif %}
-    
-    <button type="submit">Add</button>
-  </form>
+            </div>            
+            <div class="row">
+               <div class="col-6 text-center">
+                  <button class="btn btn-secondary btn-lg" type="submit">Add</button>
+                </div>
+               <div class="col-6 text-center">
+                  <a href="javascript:history.back()" class="btn btn-secondary btn-lg" >return</a>
+                </div>
+            </div> 
+          </form>
+        </div> 
+      </div>      
+    </div>
+
+    <div class="position-absolute w-100  bottom-0">
+      <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+        <defs>
+          <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+        </defs>
+        <g class="moving-waves">
+          <use xlink:href="#gentle-wave" x="48" y="-1" fill="rgba(255,255,255,0.40" />
+          <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.35)" />
+          <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.25)" />
+          <use xlink:href="#gentle-wave" x="48" y="8" fill="rgba(255,255,255,0.20)" />
+          <use xlink:href="#gentle-wave" x="48" y="13" fill="rgba(255,255,255,0.15)" />
+          <use xlink:href="#gentle-wave" x="48" y="16" fill="rgba(255,255,255,0.95" />
+        </g>
+      </svg>
+    </div>    
+  </header>
+
 
 {% endblock %}

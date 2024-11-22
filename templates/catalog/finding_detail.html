@@ -14,7 +14,9 @@
       <div class="container"> 
           <div class="col-lg-7  mx-auto">
             <h1 class="text-white">Name: {{ finding.name }}</h1>
-            <a href="{% url 'catalog:findings-update' pk=finding.pk %}">Update</a>
+            {% if request.user.is_staff or request.user == finding.user %}
+              <a class="text-info" href="{% url 'catalog:findings-update' pk=finding.pk %}">Update</a>
+            {% endif %}
             <p>Description: {{ finding.description }}</p>           
           </div>
       
@@ -22,6 +24,7 @@
         <div class="row">
         
           <div class="col-3 text-white">
+            <br>
             <p>Location: {{ finding.location }}</p>
             <p>Date found: {{ finding.date_found }}</p> 
             <p>rating: {{ average_rating }}</p>  
@@ -33,7 +36,10 @@
             </p>
           </div>      
         
-          <div class="col-9">
+          <div class="col-9 text-center">
+            {% if request.user.is_staff or request.user == finding.user %}
+              <a class="text-info " href="{% url 'catalog:image-create' %}">Add photo</a>
+            {% endif %}
             <div id="Carousel1" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner">
               {% for image in finding.images.all %}
@@ -85,7 +91,7 @@
         </form>      
       </div>      
     </div>
-    
+
       <div class="position-absolute w-100  bottom-0">
         <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
           <defs>
@@ -103,9 +109,4 @@
       </div>
     </div>
   </header> 
- 
-    
-  
-
-  
 {% endblock %}

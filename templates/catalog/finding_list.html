@@ -14,7 +14,10 @@
       <div class="container">        
         <div class="col-lg-7 text-center mx-auto">
           <h1 class="text-white pt-3 mt-n5">
-            Our findings               
+            Our findings
+            {% if request.user.is_authenticated %}
+              <a class="text-info" href="{% url 'catalog:findings-create' %}">+</a>
+            {% endif %}
           </h1>
           {% include "includes/search_form.html" %}
         </div>       

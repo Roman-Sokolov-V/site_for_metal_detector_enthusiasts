@@ -7,6 +7,7 @@ from django.template.context_processors import request
 from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Avg
+from django.forms.models import model_to_dict
 
 from catalog.form import CustomUserCreationForm, FindingCreationForm, UserSerchForm, FindingSerchForm, FeedbackForm
 from catalog.models import Finding, Collection, Image, Feedback
@@ -51,7 +52,7 @@ class UserDetailView(generic.DetailView):
     model = get_user_model()
 
     def get_queryset(self):
-        queryset = super().get_queryset().prefetch_related("findings").all()
+        queryset = super().get_queryset().prefetch_related("findings__images").all()
         return queryset
 
 class UserCreateView(UserPassesTestMixin, generic.CreateView):
@@ -136,7 +137,7 @@ class CollectionDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class FindingsListView(generic.ListView):
     model = Finding
-    paginate_by = 8
+    paginate_by = 7
 
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -174,6 +175,7 @@ class FindingsDetailView(generic.DetailView):
         context["feedback_form"] = FeedbackForm(
             initial={"reviewer": reviewer, "finding": finding},
         )
+        context["image_form"] = ImageForm()
         return context
 
     def post(self, request, *args, **kwargs):
