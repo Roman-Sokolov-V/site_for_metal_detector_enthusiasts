@@ -8,8 +8,9 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Avg
 from django.forms.models import model_to_dict
+from django.core.paginator import Paginator
 
-from catalog.form import CustomUserCreationForm, FindingCreationForm, UserSerchForm, FindingSerchForm, FeedbackForm
+from catalog.form import CustomUserCreationForm, FindingCreationForm, UserSerchForm, FindingSerchForm, FeedbackForm, ImageForm
 from catalog.models import Finding, Collection, Image, Feedback
 
 
@@ -179,19 +180,46 @@ class FindingsDetailView(generic.DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()  # Отримання поточного об'єкта
-        form = FeedbackForm(request.POST)
+        self.object = self.get_object()
+        finding = self.object
 
-        if form.is_valid():
-            form.save()  # Збереження даних у базу
-            return HttpResponseRedirect(
-                reverse("catalog:findings-detail", kwargs={"pk": self.object.pk})
-            )
+        # Перевіряємо, яку форму було надіслано
+        if "submit_feedback" in request.POST:  # Ідентифікатор кнопки
+            feedback_form = FeedbackForm(request.POST)
+            if feedback_form.is_valid():
+                feedback_form.save()
+                return HttpResponseRedirect(
+                    reverse("catalog:findings-detail", kwargs={"pk": finding.pk})
+                )
+            else:
+                # Повертаємо форму з помилками
+                image_form = ImageForm()  # Порожня форма додавання фото
+        elif "submit_image" in request.POST:  # Інший ідентифікатор кнопки
+            image_form = ImageForm(request.POST, request.FILES)
+            if image_form.is_valid():
+                image = image_form.save(commit=False)
+                image.finding = finding  # Прив'язка фото до знахідки
+                image.save()
+                return HttpResponseRedirect(
+                    reverse("catalog:findings-detail", kwargs={"pk": finding.pk})
+                )
+            else:
+                # Повертаємо форму з помилками
+                feedback_form = FeedbackForm(
+                    initial={"reviewer": request.user, "finding": finding}
+                )
         else:
-            # Якщо форма недійсна, повертаємо її з помилками
-            context = self.get_context_data()
-            context["feedback_form"] = form
-            return self.render_to_response(context)
+            # Якщо форма не визначена, повертаємо порожні форми
+            feedback_form = FeedbackForm(
+                initial={"reviewer": request.user, "finding": finding}
+            )
+            image_form = ImageForm()
+
+        # Повертаємо обидві форми в контекст
+        context = self.get_context_data()
+        context["feedback_form"] = feedback_form
+        context["image_form"] = image_form
+        return self.render_to_response(context)
 
 class FindingsCreateView(LoginRequiredMixin, generic.CreateView):
     model = Finding
@@ -236,5 +264,9 @@ class ImageDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 def feedbacks_to_finding_view(request: HttpRequest, pk) -> HttpResponse:
     feedbacks = Feedback.objects.filter(finding=pk)
-    context = {"feedbacks": feedbacks}
+    paginator = Paginator(feedbacks, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    is_paginated = page_obj.has_other_pages()
+    context = {"feedbacks": feedbacks, "page_obj": page_obj, "is_paginated": is_paginated,"paginator": paginator}
     return render(request, "catalog/feedbacks_list.html", context=context)

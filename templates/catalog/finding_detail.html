@@ -12,34 +12,38 @@
   <header class="header-2">
     <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container"> 
-          <div class="col-lg-7  mx-auto">
+          <div class="col-lg-10  mx-auto text-center">
             <h1 class="text-white">Name: {{ finding.name }}</h1>
+          
+                     
+          </div>
+      
+        <h5 class="text-white">Description: {{ finding.description }}</h5>  
+        <div class="row">
+        
+          <div class="col-4 text-white">            
+            <br>
+            {% if finding.location %}
+              <p>Location: {{ finding.location }}</p>
+            {% endif %}
+            {% if finding.date_found %}
+              <p>Date found: {{ finding.date_found }}</p> 
+            {% endif %}
+            {% if average_rating %}
+              <p>rating: {{ average_rating }}</p> 
+            {% endif %}
+              <p>created_at: {{ finding.created_at }}</p>
+            {% if finding.user.detector_model %}
+              <p>Comrade {{ finding.user }} found it with {{ finding.user.detector_model }}</p>
+            {% endif %}
             {% if request.user.is_staff or request.user == finding.user %}
               <a class="text-info" href="{% url 'catalog:findings-update' pk=finding.pk %}">Update</a>
             {% endif %}
-            <p>Description: {{ finding.description }}</p>           
-          </div>
-      
-      
-        <div class="row">
-        
-          <div class="col-3 text-white">
-            <br>
-            <p>Location: {{ finding.location }}</p>
-            <p>Date found: {{ finding.date_found }}</p> 
-            <p>rating: {{ average_rating }}</p>  
-            <p>created_at: {{ finding.created_at }}</p>  
-            <p>Comrade {{ finding.user }} found it 
-              {% if finding.user.detector_model %}
-                with {{ finding.user.detector_model }}
-              {% endif %}
-            </p>
+            <br><br>
+            
           </div>      
         
-          <div class="col-9 text-center">
-            {% if request.user.is_staff or request.user == finding.user %}
-              <a class="text-info " href="{% url 'catalog:image-create' %}">Add photo</a>
-            {% endif %}
+          <div class="col-8 text-center">
             <div id="Carousel1" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner">
               {% for image in finding.images.all %}
@@ -50,7 +54,9 @@
                       <a href="{% url 'catalog:image-delete' pk=image.pk %}" class="btn btn-danger">Delete</a>
                     </div>
                   {% endif %}
-                </div>      
+                </div>
+                {% empty %}
+                <h1>no photos added</h1>
               {% endfor %}
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#Carousel1" data-bs-slide="prev">
@@ -62,33 +68,51 @@
               <span class="visually-hidden">Next</span>
             </button>          
           </div>
+          
+          {% if request.user.is_staff or request.user == finding.user %}
+            <br>        
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div style="display: flex; justify-content: flex-end; align-items: flex-end;">
+            <label for="comment" style="margin-right: 10px"><h3>Add Photo</h3></label>
+            {{ image_form|crispy }}              
+              
+          <button type="submit" name="submit_image" class="btn btn-secondary">Add Photo</button>
+          </div>
+        {% else %}
+        </form>
+        {% endif %}
         </div>
+         
         
-        {% if feedbacks %}
-          <ul>feedbacks: 
-            {% for feedback in feedbacks.all|slice:":3" %}
+        {% if finding.feedbacks %}
+          <ul class="text-light">Feedbacks: 
+            {% for feedback in finding.feedbacks.all|slice:":3" %}
               <li>
                 from {{ feedback.reviewer }} at {{ feedback.created_at }}
                 <br>
                 {{ feedback.comment }}
                 <br>
-                {% if feedback.rating %}
+                {% if feedback.rating is not none %}
                 rated as {{ feedback.rating }} points
               {% endif %}      
               </li>  
             {% endfor %}  
           </ul>        
-         <a href="{% url 'catalog:feedbacks' pk=finding.pk %}">Show all feedbacks</a>
+         <a class="text-info" href="{% url 'catalog:feedbacks' pk=finding.pk %}">Show all {{ finding.feedbacks.count }} feedbacks</a>
         {% endif %}
+
         
-        <p>Add feedback</p>          
-        <form method="post" >
-          {% csrf_token %}
-          <div class="d-flex"> 
-            {{ feedback_form|crispy }}            
-            <input type="submit" value="submit" class="btn btn-secondary">            
-          </div>
-        </form>      
+        {% if request.user != finding.user %}  
+          <h2>Add feedback</h2>          
+          <form method="post" >
+            {% csrf_token %}
+            <div class="d-flex"> 
+              {{ feedback_form|crispy }}            
+              <input type="submit" name="submit_feedback" class="btn btn-secondary">            
+            </div>
+          </form>
+        {% endif %}
       </div>      
     </div>
 

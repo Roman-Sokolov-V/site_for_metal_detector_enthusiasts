@@ -17,7 +17,7 @@
           <h1 class="text-white pt-3 mt-n5">
             Comrad aka: {{ user.username }}
           </h1>
-          <br><br>
+          <br>
         
           {% if messages %}
             <ul class="messages" style="background-color: red">
@@ -33,7 +33,7 @@
             {% endif %}
           {% endif %}          
         </div>
-      
+        <br>
       
         <div class="row">
           <div class="col-2 text-white"></div>
@@ -43,13 +43,12 @@
               <p>First name: {{ user.first_name }}</p>
             {% endif %}
             {% if user.last_name  %}
-              <p>Last name: {{ user.first_name }}</p>
+              <p>Last name: {{ user.last_name }}</p>
             {% endif %}
             {% if user.email  %}
               <p>Email: {{ user.email }}</p>
             {% endif %}
             <p>Number of Findings: {{ user.findings.count }}</p>
-            <p>Date Joined: {{ user.date_joined }}</p>
             <p>Last Login: {{ user.last_login }}</p>            
             <p>Date joined: {{ user.date_joined }}</p>
             {% if user.detector_model  %}

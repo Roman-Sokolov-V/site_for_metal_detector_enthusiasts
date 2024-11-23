@@ -1,7 +1,7 @@
 {% load query_transform %}
-{% if is_paginated %}
+{% if is_paginated %} 
 <div class="row">
-  <div class="col-lg-7 text-center mx-auto">    
+  <div class="col-lg-7 text-center mx-auto">
     <section>
       <div class="container">
         <div class="row justify-space-between py-2">
@@ -10,13 +10,13 @@
               {% if page_obj.has_previous %}
                 <li class="page-item active">
                   <a href="?page=1" class="page-link">1</a>
-                </li>          
+                </li>
                 <li class="page-item active">
                   <a class="page-link" href="?{% query_transform request page=page_obj.previous_page_number %}" aria-label="Previous">
                     Prev
                   </a>
                 </li>
-              {% endif %}    
+              {% endif %}
               <li class="page-item active">
                 <span class="page-link">{{ page_obj.number }}</span>
               </li>
@@ -27,13 +27,13 @@
                 </a>
                 <li class="page-item active">
                   <a href="?page={{ paginator.num_pages }}" class="page-link">last</a>
-                </li> 
-              {% endif %}          
+                </li>
+              {% endif %}
             </ul>
           </div>
         </div>
       </div>
-    </section>    
+    </section>
   </div>
 </div>
 {% endif %}

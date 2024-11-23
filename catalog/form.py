@@ -84,3 +84,19 @@ class FeedbackForm(forms.ModelForm):
             "comment": "",
             "rating": "",
         }
+
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ["photo",]  # Поле 'finding' виключено для користувача
+        widgets = {
+            "photo": forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+        labels = {"photo": ""}
+
+    def __init__(self, *args, finding=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.finding = finding  # Зберігаємо передану знахідку
+        if finding:
+            self.fields['finding'].initial = finding
+            self.fields['finding'].widget = forms.HiddenInput()  # Приховуємо поле
