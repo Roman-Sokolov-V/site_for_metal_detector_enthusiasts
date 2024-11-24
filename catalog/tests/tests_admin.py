@@ -11,7 +11,9 @@ class AdminTests(TestCase):
         )
         self.client.force_login(self.admin_user)
         self.comrade = get_user_model().objects.create_user(
-            username="comrade", password="<testPASSWORD>", detector_model="Quasar"
+            username="comrade",
+            password="<testPASSWORD>",
+            detector_model="Quasar",
         )
 
     def test_user_detector_model_listed(self):

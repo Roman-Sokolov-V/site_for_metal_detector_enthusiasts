@@ -159,7 +159,10 @@ class UserUpdateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response,
-            reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.user.pk}),
+            reverse_lazy(
+                "catalog:comrades-detail",
+                kwargs={"pk": self.user.pk}
+            ),
         )
         self.assertNotEqual(
             data,
@@ -211,7 +214,9 @@ class UserDeleteViewTest(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse_lazy("catalog:comrades"))
-        self.assertFalse(get_user_model().objects.filter(pk=self.user.pk).exists())
+        self.assertFalse(
+            get_user_model().objects.filter(pk=self.user.pk).exists()
+        )
 
     def test_user_is_superuser(self):
         self.client.force_login(self.admin_user)
@@ -219,7 +224,9 @@ class UserDeleteViewTest(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse_lazy("catalog:comrades"))
-        self.assertFalse(get_user_model().objects.filter(pk=self.user.pk).exists())
+        self.assertFalse(
+            get_user_model().objects.filter(pk=self.user.pk).exists()
+        )
 
     def test_user_is_not_superuser_is_not_owner(self):
         self.client.force_login(self.another_user)
@@ -228,13 +235,19 @@ class UserDeleteViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response,
-            reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.user.pk}),
+            reverse_lazy(
+                "catalog:comrades-detail", kwargs={"pk": self.user.pk}
+            ),
         )
-        self.assertTrue(get_user_model().objects.filter(pk=self.user.pk).exists())
+        self.assertTrue(
+            get_user_model().objects.filter(pk=self.user.pk).exists()
+        )
 
     def test_user_is_not_authenticated(self):
         url = reverse("catalog:comrades-delete", kwargs={"pk": self.user.pk})
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse_lazy("login"))
-        self.assertTrue(get_user_model().objects.filter(pk=self.user.pk).exists())
+        self.assertTrue(
+            get_user_model().objects.filter(pk=self.user.pk).exists()
+        )

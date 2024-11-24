@@ -35,6 +35,7 @@ def index(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "catalog/index.html", context=context)
 
+
 class UserListView(generic.ListView):
     model = get_user_model()
     paginate_by = 7
@@ -58,7 +59,8 @@ class UserDetailView(generic.DetailView):
     model = get_user_model()
 
     def get_queryset(self):
-        queryset = super().get_queryset().prefetch_related("findings__images").all()
+        queryset = super().get_queryset().prefetch_related(
+            "findings__images").all()
         return queryset
 
 
@@ -71,7 +73,11 @@ class UserCreateView(UserPassesTestMixin, generic.CreateView):
         return not self.request.user.is_authenticated
 
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+class UserUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = get_user_model()
     fields = ("first_name", "last_name", "detector_model", "photo")
     success_url = reverse_lazy("catalog:comrades")
@@ -84,14 +90,22 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         if not self.request.user.is_authenticated:
             return redirect(reverse_lazy("login"))
         messages.error(
-            self.request, "only the account owner and superuser can edit this page"
+            self.request,
+            "only the account owner and superuser can edit this page"
         )
         return redirect(
-            reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.get_object().pk})
+            reverse_lazy(
+                "catalog:comrades-detail",
+                kwargs={"pk": self.get_object().pk}
+            )
         )
 
 
-class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+class UserDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DeleteView
+):
     model = get_user_model()
     success_url = reverse_lazy("catalog:comrades")
     template_name = "catalog/confirm_delete.html"
@@ -104,10 +118,14 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         if not self.request.user.is_authenticated:
             return redirect(reverse_lazy("login"))
         messages.error(
-            self.request, "only the account owner and superuser can edit this page"
+            self.request,
+            "only the account owner and superuser can edit this page"
         )
         return redirect(
-            reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.get_object().pk})
+            reverse_lazy(
+                "catalog:comrades-detail",
+                kwargs={"pk": self.get_object().pk}
+            )
         )
 
 
@@ -187,7 +205,9 @@ class FindingsDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         finding = self.get_object()
-        average_rating = finding.feedbacks.aggregate(Avg("rating"))["rating__avg"] or 0
+        average_rating = finding.feedbacks.aggregate(
+            Avg("rating")
+        )["rating__avg"] or 0
         context["average_rating"] = round(average_rating, 1)
         reviewer = self.request.user
         context["feedback_form"] = FeedbackForm(
@@ -204,7 +224,10 @@ class FindingsDetailView(generic.DetailView):
             if feedback_form.is_valid():
                 feedback_form.save()
                 return HttpResponseRedirect(
-                    reverse("catalog:findings-detail", kwargs={"pk": finding.pk})
+                    reverse(
+                        "catalog:findings-detail",
+                        kwargs={"pk": finding.pk}
+                    )
                 )
             else:
                 image_form = ImageForm()
@@ -215,10 +238,13 @@ class FindingsDetailView(generic.DetailView):
                 image.finding = finding
                 image.save()
                 return HttpResponseRedirect(
-                    reverse("catalog:findings-detail", kwargs={"pk": finding.pk})
+                    reverse(
+                        "catalog:findings-detail",
+                        kwargs={"pk": finding.pk}
+                    )
                 )
             else:
-                  feedback_form = FeedbackForm(
+                feedback_form = FeedbackForm(
                     initial={"reviewer": request.user, "finding": finding}
                 )
         else:

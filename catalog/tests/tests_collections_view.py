@@ -47,7 +47,10 @@ class CollectionUpdateViewTest(TestCase):
         )
 
     def test_user_is_not_authenticated(self):
-        url = reverse("catalog:collections-update", kwargs={"pk": self.collection.pk})
+        url = reverse(
+            "catalog:collections-update",
+            kwargs={"pk": self.collection.pk}
+        )
         data = {
             "description": "test description",
         }
@@ -59,7 +62,10 @@ class CollectionUpdateViewTest(TestCase):
 
     def test_user_is_authenticated(self):
         self.client.force_login(self.user)
-        url = reverse("catalog:collections-update", kwargs={"pk": self.collection.pk})
+        url = reverse(
+            "catalog:collections-update",
+            kwargs={"pk": self.collection.pk}
+        )
         data = {
             "description": "test description",
         }
@@ -85,15 +91,25 @@ class CollectionDeleteViewTest(TestCase):
         )
 
     def test_user_is_not_authenticated(self):
-        url = reverse("catalog:collections-delete", kwargs={"pk": self.collection.pk})
+        url = reverse(
+            "catalog:collections-delete",
+            kwargs={"pk": self.collection.pk}
+        )
         response = self.client.post(url)
         self.assertNotEqual(response.status_code, 200)
-        self.assertTrue(Collection.objects.filter(pk=self.collection.pk).exists())
+        self.assertTrue(
+            Collection.objects.filter(pk=self.collection.pk).exists()
+        )
 
     def test_user_is_authenticated(self):
         self.client.force_login(self.user)
-        url = reverse("catalog:collections-delete", kwargs={"pk": self.collection.pk})
+        url = reverse(
+            "catalog:collections-delete",
+            kwargs={"pk": self.collection.pk}
+        )
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse_lazy("catalog:collections"))
-        self.assertFalse(Collection.objects.filter(pk=self.collection.pk).exists())
+        self.assertFalse(
+            Collection.objects.filter(pk=self.collection.pk).exists()
+        )

@@ -25,7 +25,10 @@ class TestFindingsViewsTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertIn("search_form", response.context)
-        self.assertIsInstance(response.context["search_form"], FindingSerchForm)
+        self.assertIsInstance(
+            response.context["search_form"],
+            FindingSerchForm
+        )
 
 
 class FindingsDetailViewTests(TestCase):
@@ -35,14 +38,23 @@ class FindingsDetailViewTests(TestCase):
             username="admin",
             password="<PASSWORD123>",
         )
-        self.collection = Collection.objects.create(name="gold", description="text")
+        self.collection = Collection.objects.create(
+            name="gold",
+            description="text"
+        )
         self.finding = Finding.objects.create(name="gold", user=self.user)
         self.finding.collections.add(self.collection)
-        self.another_finding = Finding.objects.create(name="silver", user=self.user)
+        self.another_finding = Finding.objects.create(
+            name="silver",
+            user=self.user
+        )
         self.finding.collections.add(self.collection)
 
     def test_get_context_data(self):
-        url = reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk})
+        url = reverse(
+            "catalog:findings-detail",
+            kwargs={"pk": self.finding.pk}
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertIn("feedback_form", response.context)
@@ -50,7 +62,10 @@ class FindingsDetailViewTests(TestCase):
         self.assertIn("average_rating", response.context)
 
     def test_post_valid_feedback(self):
-        url = reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk})
+        url = reverse(
+            "catalog:findings-detail",
+            kwargs={"pk": self.finding.pk}
+        )
         # Валідні дані для форми
 
         valid_data = {
@@ -72,7 +87,10 @@ class FindingsDetailViewTests(TestCase):
         self.assertTrue(Feedback.objects.filter(**valid_data).exists())
 
     def test_post_invalid_feedback(self):
-        url = reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk})
+        url = reverse(
+            "catalog:findings-detail",
+            kwargs={"pk": self.finding.pk}
+        )
         invalid_data = {
             "reviewer": self.user.id,
             "finding": self.finding.id,
@@ -90,7 +108,9 @@ class FindingsDetailViewTests(TestCase):
         self.assertFalse(Feedback.objects.filter(**invalid_data).exists())
 
     def test_post_add_image_validdata(self):
-        url = reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk})
+        url = reverse(
+            "catalog:findings-detail", kwargs={"pk": self.finding.pk}
+        )
         with open("catalog/static/test_images/test.jpg", "rb") as img:
             test_image = SimpleUploadedFile(
                 name="test.jpg", content=img.read(), content_type="image/jpeg"
@@ -112,7 +132,10 @@ class FindingsDetailViewTests(TestCase):
         self.assertTrue(Image.objects.filter(finding=self.finding.id).exists())
 
     def test_post_add_image_invaliddata(self):
-        url = reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk})
+        url = reverse(
+            "catalog:findings-detail",
+            kwargs={"pk": self.finding.pk}
+        )
         invalid_data = {
             "finding": self.finding.id,
         }
@@ -120,7 +143,9 @@ class FindingsDetailViewTests(TestCase):
         response = self.client.post(url, data=invalid_data)
         self.assertEqual(response.status_code, 200)
         invalid_data.pop("submit_image")
-        self.assertFalse(Feedback.objects.filter(finding=self.finding.id).exists())
+        self.assertFalse(
+            Feedback.objects.filter(finding=self.finding.id).exists()
+        )
 
 
 class FindingsCreateViewTests(TestCase):

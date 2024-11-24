@@ -7,12 +7,21 @@ from catalog.models import User, Finding, Image, Collection, Feedback
 
 @admin.register(User)
 class ComradAdmin(UserAdmin):
-    list_display = ("username", "email", "is_staff", "date_joined", "detector_model")
+    list_display = (
+        "username",
+        "email",
+        "is_staff",
+        "date_joined",
+        "detector_model"
+    )
     fieldsets = UserAdmin.fieldsets + (
         ("Additional info", {"fields": ("detector_model",)}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        ("Additional info", {"fields": ("first_name", "last_name", "detector_model")}),
+        (
+            "Additional info",
+            {"fields": ("first_name", "last_name", "detector_model")}
+        ),
     )
 
 

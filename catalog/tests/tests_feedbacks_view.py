@@ -13,7 +13,10 @@ class FeedbackViewTests(TestCase):
             password="<PASSWORD123>",
         )
         self.finding = Finding.objects.create(name="gold", user=self.user)
-        self.another_finding = Finding.objects.create(name="silver", user=self.user)
+        self.another_finding = Finding.objects.create(
+            name="silver",
+            user=self.user
+        )
         self.feedback = Feedback.objects.create(
             comment="Gold", reviewer=self.user, finding=self.finding
         )

@@ -30,7 +30,9 @@ class FindingCreationForm(forms.ModelForm):
         widgets = {
             "user": forms.HiddenInput(),
             "name": forms.TextInput(attrs={"placeholder": "Name"}),
-            "description": forms.Textarea(attrs={"placeholder": "Description"}),
+            "description": forms.Textarea(
+                attrs={"placeholder": "Description"}
+            ),
             "location": forms.TextInput(attrs={"placeholder": "Location"}),
             "date_found": forms.DateInput(attrs={"type": "date"}),
         }
