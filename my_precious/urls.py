@@ -23,7 +23,7 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 from catalog.views import index
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path("catalog/", include("catalog.urls", namespace="catalog")),
     path("", index),
     path("accounts/", include("django.contrib.auth.urls")),

@@ -35,10 +35,6 @@ def index(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "catalog/index.html", context=context)
 
-
-########################################################################
-
-
 class UserListView(generic.ListView):
     model = get_user_model()
     paginate_by = 7
@@ -115,9 +111,6 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         )
 
 
-#########################################################################################################
-
-
 class CollectionListView(generic.ListView):
     model = Collection
     paginate_by = 5
@@ -153,9 +146,6 @@ class CollectionDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Collection
     template_name = "catalog/confirm_delete.html"
     success_url = reverse_lazy("catalog:collections")
-
-
-#####################################################################
 
 
 class FindingsListView(generic.ListView):
@@ -209,9 +199,7 @@ class FindingsDetailView(generic.DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         finding = self.object
-
-        # Перевіряємо, яку форму було надіслано
-        if "submit_feedback" in request.POST:  # Ідентифікатор кнопки
+        if "submit_feedback" in request.POST:
             feedback_form = FeedbackForm(request.POST)
             if feedback_form.is_valid():
                 feedback_form.save()
@@ -219,30 +207,26 @@ class FindingsDetailView(generic.DetailView):
                     reverse("catalog:findings-detail", kwargs={"pk": finding.pk})
                 )
             else:
-                # Повертаємо форму з помилками
-                image_form = ImageForm()  # Порожня форма додавання фото
-        elif "submit_image" in request.POST:  # Інший ідентифікатор кнопки
+                image_form = ImageForm()
+        elif "submit_image" in request.POST:
             image_form = ImageForm(request.POST, request.FILES)
             if image_form.is_valid():
                 image = image_form.save(commit=False)
-                image.finding = finding  # Прив'язка фото до знахідки
+                image.finding = finding
                 image.save()
                 return HttpResponseRedirect(
                     reverse("catalog:findings-detail", kwargs={"pk": finding.pk})
                 )
             else:
-                # Повертаємо форму з помилками
-                feedback_form = FeedbackForm(
+                  feedback_form = FeedbackForm(
                     initial={"reviewer": request.user, "finding": finding}
                 )
         else:
-            # Якщо форма не визначена, повертаємо порожні форми
             feedback_form = FeedbackForm(
                 initial={"reviewer": request.user, "finding": finding}
             )
             image_form = ImageForm()
 
-        # Повертаємо обидві форми в контекст
         context = self.get_context_data()
         context["feedback_form"] = feedback_form
         context["image_form"] = image_form
@@ -266,9 +250,7 @@ class FindingsUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_url = reverse_lazy("catalog:findings")
 
     def get_form_kwargs(self):
-        # Отримуємо всі аргументи, передані в форму
         kwargs = super().get_form_kwargs()
-        # Додаємо поточного користувача в аргументи
         kwargs["user"] = self.request.user
         return kwargs
 
@@ -289,18 +271,6 @@ class ImageDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Image
     template_name = "catalog/confirm_delete.html"
     success_url = reverse_lazy("catalog:findings")
-
-    # def delete(self, request, *args, **kwargs):
-    #     # Отримати об'єкт перед видаленням
-    #     image = self.get_object()
-    #
-    #     # Оновлення зв'язаного об'єкта
-    #     if image.finding:  # Перевірка, чи є зв'язок
-    #         image.finding.some_field = None  # Або встановити значення за замовчуванням
-    #         image.finding.save()
-    #
-    #     # Видалити зображення
-    #     return super().delete(request, *args, **kwargs)
 
 
 def feedbacks_to_finding_view(request: HttpRequest, pk) -> HttpResponse:

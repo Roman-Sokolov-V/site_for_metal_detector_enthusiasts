@@ -91,7 +91,7 @@ class ImageForm(forms.ModelForm):
         model = Image
         fields = [
             "photo",
-        ]  # Поле 'finding' виключено для користувача
+        ]
         widgets = {
             "photo": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
@@ -99,7 +99,7 @@ class ImageForm(forms.ModelForm):
 
     def __init__(self, *args, finding=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.finding = finding  # Зберігаємо передану знахідку
+        self.finding = finding
         if finding:
             self.fields["finding"].initial = finding
-            self.fields["finding"].widget = forms.HiddenInput()  # Приховуємо поле
+            self.fields["finding"].widget = forms.HiddenInput()
