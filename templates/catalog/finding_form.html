@@ -1,14 +1,9 @@
 {% extends "layouts/base-presentation.html" %}
-
 {% block title %} Presentation {% endblock title %}
-
-
 {% block stylesheets %}{% endblock stylesheets %}
-
 {% block body_class %} Users-page {% endblock body_class %}
 {% load crispy_forms_tags %}
-{% block content %}
-  
+{% block content %}  
   <header class="header-2">
     <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container"> 
@@ -16,9 +11,7 @@
           <h1 class="text-center text-white">{{ object|yesno:"Update,Create" }} Finding</h1>
           <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div  class="text-white">
               {{ form|crispy }}
-            </div>            
             <div class="row">
                <div class="col-6 text-center">
                   <button class="btn btn-secondary btn-lg" type="submit">{{ object|yesno:"Update,Register" }}</button>
@@ -31,7 +24,6 @@
         </div> 
       </div>      
     </div>
-
     <div class="position-absolute w-100  bottom-0">
       <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
         <defs>

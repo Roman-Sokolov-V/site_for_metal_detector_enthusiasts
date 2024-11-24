@@ -1,33 +1,26 @@
 {% extends "layouts/base-presentation.html" %}
-
 {% block title %} Presentation {% endblock title %}
-
-
 {% block stylesheets %}{% endblock stylesheets %}
-
 {% block body_class %} Users-page {% endblock body_class %}
 {% load crispy_forms_tags %}
-{% block content %}
-  
+{% block content %}  
   <header class="header-2">
     <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container"> 
         <div class="col-lg-7   mx-auto">
-            <h1 class="text-center text-white">Are you sure you want to delete <strong>{{ object }}</strong>?</h1>
-            <form action="" method="post">
-              {% csrf_token %} 
-              <br>
-              <div class="row">
-                <div class="col-6 text-center">
-                  <input type="submit" value="Yes, delete" class="btn btn-danger btn-lg" style="width: 80%;">
-                </div>
-                <div class="col-6 text-center">
-                  <a href="javascript:history.back()" class="btn btn-secondary btn-lg" style="width: 80%; background-color: blue">No, cancel</a>
-                </div>
+          <h1 class="text-center text-white">Are you sure you want to delete <strong>{{ object }}</strong>?</h1>
+          <form action="" method="post">
+            {% csrf_token %} 
+            <br>
+            <div class="row">
+              <div class="col-6 text-center">
+                <input type="submit" value="Yes, delete" class="btn btn-danger btn-lg" style="width: 80%;">
               </div>
-              
-              
-            </form>
+              <div class="col-6 text-center">
+                <a href="javascript:history.back()" class="btn btn-secondary btn-lg" style="width: 80%; background-color: blue">No, cancel</a>
+              </div>
+            </div>
+          </form>
         </div> 
       </div>      
     </div>
@@ -48,10 +41,4 @@
       </svg>
     </div>    
   </header>
-
-
-
-  
-
-
 {% endblock %}

@@ -1,23 +1,17 @@
 {% extends "layouts/base-presentation.html" %}
-
 {% block title %} Presentation {% endblock title %}
-
-
 {% block stylesheets %}{% endblock stylesheets %}
-
 {% block body_class %} Users-page {% endblock body_class %}
 {% load crispy_forms_tags %}
-{% block content %}
-  
+{% block content %}  
   <header class="header-2">
     <div class="page-header section-height-200 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container"> 
-          <div class="col-lg-10  mx-auto mt-6 text-center">
-            <h1 class="text-white">Name: {{ finding.name }}</h1>  
-          </div>      
+        <div class="col-lg-10  mx-auto mt-6 text-center">
+          <h1 class="text-white">Name: {{ finding.name }}</h1>  
+        </div>      
         <h5 class="text-white">Description: {{ finding.description }}</h5>  
-        <div class="row">
-        
+        <div class="row">        
           <div class="col-4 text-white">            
             <br>
             {% if finding.location %}
@@ -37,45 +31,43 @@
               <a class="text-info" href="{% url 'catalog:findings-update' pk=finding.pk %}">Update</a>
             {% endif %}
             <br><br>
-             {% if finding.feedbacks %}
-          <ul class="text-light">Feedbacks: 
-            {% for feedback in finding.feedbacks.all|slice:":3" %}
-              <li>
-                from {{ feedback.reviewer }} at {{ feedback.created_at }}
-                <br>
-                {{ feedback.comment }}
-                <br>
-                {% if feedback.rating is not none %}
-                rated as {{ feedback.rating }} points
-              {% endif %}      
-              </li>  
-            {% endfor %}  
-          </ul>        
-         <a class="text-info" href="{% url 'catalog:feedbacks' pk=finding.pk %}">Show all {{ finding.feedbacks.count }} feedbacks</a>
-        {% endif %}
-            
-          </div>      
-        
+            {% if finding.feedbacks %}
+              <ul class="text-light">Feedbacks: 
+                {% for feedback in finding.feedbacks.all|slice:":3" %}
+                  <li>
+                    from {{ feedback.reviewer }} at {{ feedback.created_at }}
+                    <br>
+                    {{ feedback.comment }}
+                    <br>
+                    {% if feedback.rating is not none %}
+                      rated as {{ feedback.rating }} points
+                    {% endif %}      
+                  </li>  
+                {% endfor %}  
+              </ul>        
+              <a class="text-info" href="{% url 'catalog:feedbacks' pk=finding.pk %}">Show all {{ finding.feedbacks.count }} feedbacks</a>
+            {% endif %}            
+          </div>
           <div class="col-8 text-center">
             <div id="Carousel1" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
               <div class="carousel-inner">
                 {% if finding.images %}
-                {% for image in finding.images.all %}
-                  <div style="max-height: 50vh; object-fit: cover;" class="carousel-item {% if forloop.first %}active{% endif %}">
-                    {% if image.photo %}
-                    <div style="max-height: 50vh; max-width: 100vw; overflow: hidden; display: flex; justify-content: center; align-items: center;">
-                      <img src="{{ image.photo.url }}" class="d-block" style="object-fit: contain; max-width: 100%; max-height: 100%;" alt="No image">
+                  {% for image in finding.images.all %}
+                    <div style="max-height: 50vh; object-fit: cover;" class="carousel-item {% if forloop.first %}active{% endif %}">
+                      {% if image.photo %}
+                        <div style="max-height: 50vh; max-width: 100vw; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+                          <img src="{{ image.photo.url }}" class="d-block" style="object-fit: contain; max-width: 100%; max-height: 100%;" alt="No image">
+                        </div>
+                      {% endif %}
+                      {% if request.user.is_staff or request.user == finding.user %}
+                        <div class="position-absolute bottom-0 start-50 translate-middle-x">
+                          <a href="{% url 'catalog:image-delete' pk=image.pk %}" class="btn btn-danger">Delete</a>
+                        </div>
+                      {% endif %}
                     </div>
-                    {% endif %}
-                    {% if request.user.is_staff or request.user == finding.user %}
-                      <div class="position-absolute bottom-0 start-50 translate-middle-x">
-                        <a href="{% url 'catalog:image-delete' pk=image.pk %}" class="btn btn-danger">Delete</a>
-                      </div>
-                    {% endif %}
-                  </div>
-                  {% empty %}
-                  <h1>no photos added</h1>
-                {% endfor %}
+                    {% empty %}
+                      <h1>no photos added</h1>
+                  {% endfor %}
                 {% endif %}
               </div>
               <button class="carousel-control-prev" type="button" data-bs-target="#Carousel1" data-bs-slide="prev">
@@ -86,40 +78,31 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
               </button>          
-            </div>
-          
-          {% if request.user.is_staff or request.user == finding.user %}
-            <br>        
-        <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div style="display: flex; justify-content: flex-; align-items: flex-end;" class="mx-7">
-            <label for="comment" style="margin-right: 20px"><h3>Add Photo</h3></label>
-            {{ image_form|crispy }}              
-              
-          <button type="submit" name="submit_image" class="btn btn-secondary">Add Photo</button>
+            </div>          
+            {% if request.user.is_staff or request.user == finding.user %}
+              <br>        
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div style="display: flex; justify-content: flex-; align-items: flex-end;" class="mx-7">
+                  <label for="comment" style="margin-right: 20px"><h3>Add Photo</h3></label>
+                  {{ image_form|crispy }}
+                  <button type="submit" name="submit_image" class="btn btn-secondary">Add Photo</button>
+                </div>                
+              </form>
+            {% endif %}
           </div>
-        {% else %}
-        </form>
-        {% endif %}
-        </div>
-         
-        
-       
-
-        
-        {% if request.user != finding.user %}  
-          <h2>Add feedback</h2>          
-          <form method="post" >
-            {% csrf_token %}
-            <div class="d-flex"> 
-              {{ feedback_form|crispy }}            
-              <input type="submit" name="submit_feedback" class="btn btn-secondary">            
-            </div>
-          </form>
-        {% endif %}
-      </div>      
-    </div>
-
+          {% if request.user != finding.user %}  
+            <h2>Add feedback</h2>          
+            <form method="post" >
+              {% csrf_token %}
+              <div class="d-flex"> 
+                {{ feedback_form|crispy }}            
+                <input type="submit" name="submit_feedback" class="btn btn-secondary">            
+              </div>
+            </form>
+          {% endif %}
+        </div>      
+      </div>
       <div class="position-absolute w-100  bottom-0">
         <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
           <defs>

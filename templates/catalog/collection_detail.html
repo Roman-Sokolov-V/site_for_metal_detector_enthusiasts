@@ -1,6 +1,6 @@
 {% extends 'layouts/base-presentation.html' %}
 {% block content %}
-    <header class="header-2">
+  <header class="header-2">
     <div class="page-header section-height-75 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container">
         <div class="row">
@@ -12,13 +12,14 @@
               </a>
               <br /> 
             <p class="text-white">{{ collection.description }}</p>
-            <ul class="text-grey-layer1-normal text-xl-left">Findings: 
+            <ul class="text-grey-layer1-normal text-xl-left">
+              Findings: 
               {% for finding in collection.findings.all %}
-              <li>
-                <a class="text-white" href="{% url 'catalog:findings-detail' pk=finding.pk %}">
-                {{ finding.name }}
-                </a>
-              </li>  
+                <li>
+                  <a class="text-white" href="{% url 'catalog:findings-detail' pk=finding.pk %}">
+                    {{ finding.name }}
+                  </a>
+                </li>  
             {% endfor %}
             </ul> 
           </div>

@@ -1,14 +1,9 @@
 {% extends "layouts/base-presentation.html" %}
-
 {% block title %} Presentation {% endblock title %}
-
-
 {% block stylesheets %}{% endblock stylesheets %}
-
 {% block body_class %} Users-page {% endblock body_class %}
 {% load crispy_forms_tags %}
-{% block content %}
-  
+{% block content %}  
   <header class="header-2">
     <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container"> 
@@ -16,14 +11,14 @@
           <h1 class="text-center text-white">{{ object|yesno:"Update,Create" }} Collection</h1>
           <form action="" method="post" >
             {% csrf_token %}
-            {{ form|crispy }}
+              {{ form|crispy }}
             <div class="row">
-               <div class="col-6 text-center">
-                  <button class="btn btn-secondary btn-lg" type="submit">Submit</button>
-                </div>
-               <div class="col-6 text-center">
-                  <a href="javascript:history.back()" class="btn btn-secondary btn-lg" >return</a>
-                </div>
+             <div class="col-6 text-center">
+              <button class="btn btn-secondary btn-lg" type="submit">Submit</button>
+             </div>
+             <div class="col-6 text-center">
+              <a href="javascript:history.back()" class="btn btn-secondary btn-lg" >return</a>
+             </div>
             </div> 
           </form>
         </div> 

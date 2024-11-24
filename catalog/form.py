@@ -32,7 +32,7 @@ class FindingCreationForm(forms.ModelForm):
             "name": forms.TextInput(attrs={"placeholder": "Name"}),
             "description": forms.Textarea(attrs={"placeholder": "Description"}),
             "location": forms.TextInput(attrs={"placeholder": "Location"}),
-            "date_found": forms.DateInput(attrs={'type': 'date'}),
+            "date_found": forms.DateInput(attrs={"type": "date"}),
         }
         labels = {
             "name": "",
@@ -43,11 +43,11 @@ class FindingCreationForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
         if user:
-            self.fields['user'].initial = user
+            self.fields["user"].initial = user
             self.fields["user"].disabled = True
 
 
@@ -58,6 +58,7 @@ class FindingSerchForm(forms.Form):
         label="",
         widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
     )
+
 
 class FeedbackForm(forms.ModelForm):
     class Meta:
@@ -77,7 +78,6 @@ class FeedbackForm(forms.ModelForm):
                     "cols": "2000",
                     "rows": "1",
                 },
-
             ),
         }
         labels = {
@@ -85,12 +85,15 @@ class FeedbackForm(forms.ModelForm):
             "rating": "",
         }
 
+
 class ImageForm(forms.ModelForm):
     class Meta:
         model = Image
-        fields = ["photo",]  # Поле 'finding' виключено для користувача
+        fields = [
+            "photo",
+        ]  # Поле 'finding' виключено для користувача
         widgets = {
-            "photo": forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            "photo": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
         labels = {"photo": ""}
 
@@ -98,5 +101,5 @@ class ImageForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.finding = finding  # Зберігаємо передану знахідку
         if finding:
-            self.fields['finding'].initial = finding
-            self.fields['finding'].widget = forms.HiddenInput()  # Приховуємо поле
+            self.fields["finding"].initial = finding
+            self.fields["finding"].widget = forms.HiddenInput()  # Приховуємо поле

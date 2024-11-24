@@ -1,54 +1,40 @@
 {% extends "layouts/base-presentation.html" %}
-
 {% block title %} Presentation {% endblock title %}
-
-
 {% block stylesheets %}{% endblock stylesheets %}
-
 {% block body_class %} Users-page {% endblock body_class %}
-
-{% block content %}
-  
+{% block content %}  
   <header class="header-2">
     <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container">        
-          <div class="col-lg-7 text-center mx-auto">
-            <h1 class="text-white pt-3 mt-n5">
-              Feedbacks
-            </h1>
-          </div>        
+        <div class="col-lg-7 text-center mx-auto">
+          <h1 class="text-white pt-3 mt-n5">
+            Feedbacks
+          </h1>
+        </div>        
         <div class="text-light">              
-                {% if feedbacks %}
-                  {% for feedback in page_obj %}
-                    <div class="row">
-                      <div class="col-4">
-                        <ul>
-                          <li>reviewer: {{ feedback.reviewer}}</li>
-                          <li>rate: {{ feedback.rating }}</li>
-                          <li>created_at: {{ feedback.created_at }}</li>
-                        </ul>
-                      </div>
-                      <div class="col-8">
-                          <ul>commentary:
-                            <li>{{ feedback.comment}}</li>
-                          </ul>
-                      </div>                      
-                    </div>                    
-                  {% endfor %}                  
-                  {% else %}
-                    <p>There are no feedbacks yet.</p>
-                  {% endif %}                
-        {% include "includes/pagination.html" %}
-        
+          {% if feedbacks %}
+            {% for feedback in page_obj %}
+              <div class="row">
+                <div class="col-4">
+                  <ul>
+                    <li>reviewer: {{ feedback.reviewer}}</li>
+                    <li>rate: {{ feedback.rating }}</li>
+                    <li>created_at: {{ feedback.created_at }}</li>
+                  </ul>
+                </div>
+                <div class="col-8">
+                  <ul>commentary:
+                    <li>{{ feedback.comment}}</li>
+                  </ul>
+                </div>                      
+              </div>                    
+            {% endfor %}                  
+            {% else %}
+              <p>There are no feedbacks yet.</p>
+          {% endif %}                
+          {% include "includes/pagination.html" %}        
         </div>
-      </div>
-      
+      </div>      
     </div>
-  </header> 
- 
+  </header>  
 {% endblock %}
-
-
-
-
-

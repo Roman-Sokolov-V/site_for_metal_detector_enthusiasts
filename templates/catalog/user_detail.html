@@ -1,14 +1,8 @@
 {% extends "layouts/base-presentation.html" %}
-
 {% block title %} Presentation {% endblock title %}
-
-
 {% block stylesheets %}{% endblock stylesheets %}
-
 {% block body_class %} Users-page {% endblock body_class %}
-
-{% block content %}
-  
+{% block content %}  
   <header class="header-2">
     <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container "> 
@@ -17,27 +11,24 @@
           <h1 class="text-white pt-3 mt-n5">
             Comrad aka: {{ user.username }}
           </h1>
-          <br>
-        
+          <br>        
           {% if messages %}
             <ul class="messages" style="background-color: red">
               {% for message in messages %}
                 <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
               {% endfor %}
             </ul>
-          {% else %}
-            {% if request.user.is_staff or request.user == user %}
-              <a class="text-info" href="{% url 'catalog:comrades-update' pk=user.pk %}">
-                Update information
-              </a>
-            {% endif %}
+            {% else %}
+              {% if request.user.is_staff or request.user == user %}
+                <a class="text-info" href="{% url 'catalog:comrades-update' pk=user.pk %}">
+                  Update information
+                </a>
+              {% endif %}
           {% endif %}          
         </div>
-        <br>
-      
+        <br>      
         <div class="row">
-          <div class="col-2 text-white"></div>
-        
+          <div class="col-2 text-white"></div>        
           <div class="col-4 text-white">
             {% if user.first_name  %}
               <p>First name: {{ user.first_name }}</p>
@@ -54,9 +45,7 @@
             {% if user.detector_model  %}
               <p>Detector model: {{ user.detector_model }}</p>
             {% endif %}
-
-          </div>      
-        
+          </div>
           <div class="col-6 ">
             {% if user.photo %}
               <img src="{{ user.photo.url }}" alt="{{ user.username }}'s photo" style="max-width: 80%; max-height: 80%;">
@@ -66,7 +55,6 @@
           </div>
         </div>        
       </div>
-
       <div class="position-absolute w-100   bottom-0">
         <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
           <defs>
@@ -83,7 +71,6 @@
         </svg>
       </div>
     </div>
-  </header>
-  
+  </header>  
 {% endblock %}
   

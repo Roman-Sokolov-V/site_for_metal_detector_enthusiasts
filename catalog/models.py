@@ -8,8 +8,8 @@ from django.db.models import Q
 from my_precious.settings import AUTH_USER_MODEL
 
 
+RATING_CHOICES = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)]
 
-RATING_CHOICES = [(1, 1),(2, 2),(3, 3),(4, 4), (5, 5)]
 
 class User(AbstractUser):
     detector_model = models.CharField(max_length=255, null=True, blank=True)
@@ -27,9 +27,15 @@ class Finding(models.Model):
     description = models.TextField(blank=True, null=True)
     location = models.TextField(blank=True, null=True)
     date_found = models.DateField(blank=True, null=True)
-    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="findings")
-    collections = models.ManyToManyField("Collection", related_name="findings", blank= True)
-    created_at = models.DateTimeField(auto_now_add=True,)
+    user = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="findings"
+    )
+    collections = models.ManyToManyField(
+        "Collection", related_name="findings", blank=True
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
 
     class Meta:
         verbose_name = "Finding"
@@ -40,9 +46,8 @@ class Finding(models.Model):
         return f"{self.name}"
 
 
-
 class Collection(models.Model):
-    name = models.CharField(max_length=255, blank=True, unique = True)
+    name = models.CharField(max_length=255, blank=True, unique=True)
     description = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -53,8 +58,11 @@ class Collection(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+
 class Image(models.Model):
-    finding = models.ForeignKey(Finding, on_delete=models.CASCADE, related_name="images")
+    finding = models.ForeignKey(
+        Finding, on_delete=models.CASCADE, related_name="images"
+    )
     photo = models.ImageField(upload_to="findings_photo/")
 
     class Meta:
@@ -65,13 +73,18 @@ class Image(models.Model):
         return f"image {self.finding.name} id: {self.pk}"
 
 
-
 class Feedback(models.Model):
-    reviewer = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reviewers")
+    reviewer = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reviewers"
+    )
     comment = models.TextField(blank=True, null=True)
-    finding = models.ForeignKey(Finding, on_delete=models.CASCADE, related_name="feedbacks")
+    finding = models.ForeignKey(
+        Finding, on_delete=models.CASCADE, related_name="feedbacks"
+    )
     rating = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True,)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
 
     class Meta:
         verbose_name = "Feedback"
@@ -80,7 +93,7 @@ class Feedback(models.Model):
         constraints = [
             models.CheckConstraint(
                 check=Q(comment__isnull=False) | Q(rating__isnull=False),
-                name='at_least_one_field_filled'
+                name="at_least_one_field_filled",
             )
         ]
 

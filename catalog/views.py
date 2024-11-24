@@ -10,7 +10,14 @@ from django.db.models import Avg
 from django.forms.models import model_to_dict
 from django.core.paginator import Paginator
 
-from catalog.form import CustomUserCreationForm, FindingCreationForm, UserSerchForm, FindingSerchForm, FeedbackForm, ImageForm
+from catalog.form import (
+    CustomUserCreationForm,
+    FindingCreationForm,
+    UserSerchForm,
+    FindingSerchForm,
+    FeedbackForm,
+    ImageForm,
+)
 from catalog.models import Finding, Collection, Image, Feedback
 
 
@@ -28,7 +35,9 @@ def index(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "catalog/index.html", context=context)
 
+
 ########################################################################
+
 
 class UserListView(generic.ListView):
     model = get_user_model()
@@ -56,6 +65,7 @@ class UserDetailView(generic.DetailView):
         queryset = super().get_queryset().prefetch_related("findings__images").all()
         return queryset
 
+
 class UserCreateView(UserPassesTestMixin, generic.CreateView):
     model = get_user_model()
     form_class = CustomUserCreationForm
@@ -77,8 +87,12 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
             return redirect(reverse_lazy("login"))
-        messages.error(self.request, "only the account owner and superuser can edit this page")
-        return redirect(reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.get_object().pk}))
+        messages.error(
+            self.request, "only the account owner and superuser can edit this page"
+        )
+        return redirect(
+            reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.get_object().pk})
+        )
 
 
 class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
@@ -93,10 +107,16 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
             return redirect(reverse_lazy("login"))
-        messages.error(self.request, "only the account owner and superuser can edit this page")
-        return redirect(reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.get_object().pk}))
+        messages.error(
+            self.request, "only the account owner and superuser can edit this page"
+        )
+        return redirect(
+            reverse_lazy("catalog:comrades-detail", kwargs={"pk": self.get_object().pk})
+        )
+
 
 #########################################################################################################
+
 
 class CollectionListView(generic.ListView):
     model = Collection
@@ -105,6 +125,7 @@ class CollectionListView(generic.ListView):
     def get_queryset(self):
         queryset = super().get_queryset().prefetch_related("findings")
         return queryset
+
 
 class CollectionDetailView(generic.DetailView):
     model = Collection
@@ -136,10 +157,10 @@ class CollectionDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 #####################################################################
 
+
 class FindingsListView(generic.ListView):
     model = Finding
     paginate_by = 7
-
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -156,15 +177,21 @@ class FindingsListView(generic.ListView):
         return super().get_queryset()
 
 
-
-
 class FindingsDetailView(generic.DetailView):
     model = Finding
 
     def get_queryset(self):
-        queryset = super().get_queryset().prefetch_related(
-            "images", "collections", "feedbacks",
-        ).select_related("user").all()
+        queryset = (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                "images",
+                "collections",
+                "feedbacks",
+            )
+            .select_related("user")
+            .all()
+        )
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -221,6 +248,7 @@ class FindingsDetailView(generic.DetailView):
         context["image_form"] = image_form
         return self.render_to_response(context)
 
+
 class FindingsCreateView(LoginRequiredMixin, generic.CreateView):
     model = Finding
     form_class = FindingCreationForm
@@ -231,6 +259,7 @@ class FindingsCreateView(LoginRequiredMixin, generic.CreateView):
         kwargs["user"] = self.request.user
         return kwargs
 
+
 class FindingsUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Finding
     form_class = FindingCreationForm
@@ -240,14 +269,14 @@ class FindingsUpdateView(LoginRequiredMixin, generic.UpdateView):
         # Отримуємо всі аргументи, передані в форму
         kwargs = super().get_form_kwargs()
         # Додаємо поточного користувача в аргументи
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
         return kwargs
+
 
 class FindingsDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Finding
     template_name = "catalog/confirm_delete.html"
     success_url = reverse_lazy("catalog:findings")
-
 
 
 class ImageCreateView(LoginRequiredMixin, generic.CreateView):
@@ -277,8 +306,13 @@ class ImageDeleteView(LoginRequiredMixin, generic.DeleteView):
 def feedbacks_to_finding_view(request: HttpRequest, pk) -> HttpResponse:
     feedbacks = Feedback.objects.filter(finding=pk)
     paginator = Paginator(feedbacks, 5)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     is_paginated = page_obj.has_other_pages()
-    context = {"feedbacks": feedbacks, "page_obj": page_obj, "is_paginated": is_paginated,"paginator": paginator}
+    context = {
+        "feedbacks": feedbacks,
+        "page_obj": page_obj,
+        "is_paginated": is_paginated,
+        "paginator": paginator,
+    }
     return render(request, "catalog/feedbacks_list.html", context=context)
