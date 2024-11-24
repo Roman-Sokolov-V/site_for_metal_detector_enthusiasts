@@ -261,6 +261,18 @@ class ImageDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = "catalog/confirm_delete.html"
     success_url = reverse_lazy("catalog:findings")
 
+    # def delete(self, request, *args, **kwargs):
+    #     # Отримати об'єкт перед видаленням
+    #     image = self.get_object()
+    #
+    #     # Оновлення зв'язаного об'єкта
+    #     if image.finding:  # Перевірка, чи є зв'язок
+    #         image.finding.some_field = None  # Або встановити значення за замовчуванням
+    #         image.finding.save()
+    #
+    #     # Видалити зображення
+    #     return super().delete(request, *args, **kwargs)
+
 
 def feedbacks_to_finding_view(request: HttpRequest, pk) -> HttpResponse:
     feedbacks = Feedback.objects.filter(finding=pk)

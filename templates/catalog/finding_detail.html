@@ -10,14 +10,11 @@
 {% block content %}
   
   <header class="header-2">
-    <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
+    <div class="page-header section-height-200 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container"> 
-          <div class="col-lg-10  mx-auto text-center">
-            <h1 class="text-white">Name: {{ finding.name }}</h1>
-          
-                     
-          </div>
-      
+          <div class="col-lg-10  mx-auto mt-6 text-center">
+            <h1 class="text-white">Name: {{ finding.name }}</h1>  
+          </div>      
         <h5 class="text-white">Description: {{ finding.description }}</h5>  
         <div class="row">
         
@@ -40,52 +37,7 @@
               <a class="text-info" href="{% url 'catalog:findings-update' pk=finding.pk %}">Update</a>
             {% endif %}
             <br><br>
-            
-          </div>      
-        
-          <div class="col-8 text-center">
-            <div id="Carousel1" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-            <div class="carousel-inner">
-              {% for image in finding.images.all %}
-                <div style="max-height: 50vh; object-fit: cover;" class="carousel-item {% if forloop.first %}active{% endif %}">
-                  <img src="{{ image.photo.url }}" class="d-block w-100" alt="Image {{ image.pk }}">
-                  {% if request.user.is_staff or request.user == finding.user %}
-                    <div class="position-absolute bottom-0 start-50 translate-middle-x mb-3">
-                      <a href="{% url 'catalog:image-delete' pk=image.pk %}" class="btn btn-danger">Delete</a>
-                    </div>
-                  {% endif %}
-                </div>
-                {% empty %}
-                <h1>no photos added</h1>
-              {% endfor %}
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#Carousel1" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#Carousel1" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>          
-          </div>
-          
-          {% if request.user.is_staff or request.user == finding.user %}
-            <br>        
-        <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div style="display: flex; justify-content: flex-end; align-items: flex-end;">
-            <label for="comment" style="margin-right: 10px"><h3>Add Photo</h3></label>
-            {{ image_form|crispy }}              
-              
-          <button type="submit" name="submit_image" class="btn btn-secondary">Add Photo</button>
-          </div>
-        {% else %}
-        </form>
-        {% endif %}
-        </div>
-         
-        
-        {% if finding.feedbacks %}
+             {% if finding.feedbacks %}
           <ul class="text-light">Feedbacks: 
             {% for feedback in finding.feedbacks.all|slice:":3" %}
               <li>
@@ -101,6 +53,58 @@
           </ul>        
          <a class="text-info" href="{% url 'catalog:feedbacks' pk=finding.pk %}">Show all {{ finding.feedbacks.count }} feedbacks</a>
         {% endif %}
+            
+          </div>      
+        
+          <div class="col-8 text-center">
+            <div id="Carousel1" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+              <div class="carousel-inner">
+                {% if finding.images %}
+                {% for image in finding.images.all %}
+                  <div style="max-height: 50vh; object-fit: cover;" class="carousel-item {% if forloop.first %}active{% endif %}">
+                    {% if image.photo %}
+                    <div style="max-height: 50vh; max-width: 100vw; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+                      <img src="{{ image.photo.url }}" class="d-block" style="object-fit: contain; max-width: 100%; max-height: 100%;" alt="No image">
+                    </div>
+                    {% endif %}
+                    {% if request.user.is_staff or request.user == finding.user %}
+                      <div class="position-absolute bottom-0 start-50 translate-middle-x">
+                        <a href="{% url 'catalog:image-delete' pk=image.pk %}" class="btn btn-danger">Delete</a>
+                      </div>
+                    {% endif %}
+                  </div>
+                  {% empty %}
+                  <h1>no photos added</h1>
+                {% endfor %}
+                {% endif %}
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#Carousel1" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#Carousel1" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>          
+            </div>
+          
+          {% if request.user.is_staff or request.user == finding.user %}
+            <br>        
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div style="display: flex; justify-content: flex-; align-items: flex-end;" class="mx-7">
+            <label for="comment" style="margin-right: 20px"><h3>Add Photo</h3></label>
+            {{ image_form|crispy }}              
+              
+          <button type="submit" name="submit_image" class="btn btn-secondary">Add Photo</button>
+          </div>
+        {% else %}
+        </form>
+        {% endif %}
+        </div>
+         
+        
+       
 
         
         {% if request.user != finding.user %}  

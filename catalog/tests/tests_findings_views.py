@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 from  django.urls import reverse, reverse_lazy
+from django.core.files.uploadedfile import SimpleUploadedFile
 
-from catalog.models import Collection, Finding, Feedback
+from catalog.models import Collection, Finding, Feedback, Image
 from catalog.form import FindingSerchForm, FeedbackForm, FindingCreationForm
 
 
@@ -48,15 +49,20 @@ class FindingsDetailViewTests(TestCase):
     def test_post_valid_feedback(self):
         url = reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk})
         # Валідні дані для форми
+
         valid_data = {
             "reviewer": self.user.id,
             "finding": self.finding.id,
             "rating": 4,
             "comment": "Great finding!",
         }
-        response = self.client.post(url, data=valid_data)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, url)
+        valid_data["submit_feedback"] = "Submit"
+        response = self.client.post(url, data=valid_data,)
+        self.assertRedirects(
+            response,
+            reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk}),
+        )
+        valid_data.pop("submit_feedback")
         self.assertTrue(Feedback.objects.filter(**valid_data).exists())
 
     def test_post_invalid_feedback(self):
@@ -67,12 +73,53 @@ class FindingsDetailViewTests(TestCase):
             "comment": "Invalid rating",
             "rating": 10,
         }
+        invalid_data["submit_feedback"] = "Submit"
         response = self.client.post(url, data=invalid_data)
         self.assertEqual(response.status_code, 200)
         self.assertIn("feedback_form", response.context)
         form = response.context["feedback_form"]
         self.assertFalse(form.is_valid())
         self.assertIn("rating", form.errors)
+        invalid_data.pop("submit_feedback")
+        self.assertFalse(Feedback.objects.filter(**invalid_data).exists())
+
+    def test_post_valid_add_image(self):
+        url = reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk})
+        with open("catalog/static/test_images/test.jpg", "rb") as img:
+            test_image = SimpleUploadedFile(
+                name="test.jpg",
+                content=img.read(),
+                content_type="image/jpeg"
+            )
+        valid_data = {
+            "finding": self.finding.id,
+            "photo": test_image,
+        }
+        valid_data["submit_image"] = "Submit"
+        response = self.client.post(url, data=valid_data, )
+        self.assertRedirects(
+            response,
+            reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk}),
+        )
+        valid_data.pop("submit_image")
+        self.assertTrue(Image.objects.filter(**valid_data).exists())
+
+    def test_post_invalid_feedback(self):
+        url = reverse("catalog:findings-detail", kwargs={"pk": self.finding.pk})
+        invalid_data = {
+            "reviewer": self.user.id,
+            "finding": self.finding.id,
+            "comment": "Invalid rating",
+            "rating": 10,
+        }
+        invalid_data["submit_feedback"] = "Submit"
+        response = self.client.post(url, data=invalid_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("feedback_form", response.context)
+        form = response.context["feedback_form"]
+        self.assertFalse(form.is_valid())
+        self.assertIn("rating", form.errors)
+        invalid_data.pop("submit_feedback")
         self.assertFalse(Feedback.objects.filter(**invalid_data).exists())
 
 class FindingsCreateViewTests(TestCase):

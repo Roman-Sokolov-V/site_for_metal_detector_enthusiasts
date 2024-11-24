@@ -53,7 +53,7 @@ class Collection(models.Model):
 
 class Image(models.Model):
     finding = models.ForeignKey(Finding, on_delete=models.CASCADE, related_name="images")
-    photo = models.ImageField(upload_to="findings_photo/", null=True, blank=True)
+    photo = models.ImageField(upload_to="findings_photo/")
 
     class Meta:
         verbose_name = "Image"
@@ -75,6 +75,12 @@ class Feedback(models.Model):
         verbose_name = "Feedback"
         verbose_name_plural = "Feedbacks"
         ordering = ("-created_at",)
+        constraints = [
+            models.CheckConstraint(
+                check=Q(comment__isnull=False) | Q(rating__isnull=False),
+                name='at_least_one_field_filled'
+            )
+        ]
 
     def __str__(self):
         return f"'{self.finding.name}' feedback by {self.reviewer.username}"
