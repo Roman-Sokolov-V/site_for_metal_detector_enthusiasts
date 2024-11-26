@@ -299,27 +299,11 @@ class ImageDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("catalog:findings")
 
 
-# def feedbacks_to_finding_view(request: HttpRequest, pk) -> HttpResponse:
-#     feedbacks = Feedback.objects.filter(finding=pk)
-#     paginator = Paginator(feedbacks, 5)
-#     page_number = request.GET.get("page")
-#     page_obj = paginator.get_page(page_number)
-#     is_paginated = page_obj.has_other_pages()
-#     context = {
-#         "feedbacks": feedbacks,
-#         "page_obj": page_obj,
-#         "is_paginated": is_paginated,
-#         "paginator": paginator,
-#     }
-#     return render(request, "catalog/feedbacks_list.html", context=context)
-
 class FeedbacksToFindingView(generic.ListView):
     model = Feedback
     paginate_by = 5
     template_name = "catalog/feedbacks_list.html"
 
-
     def get_queryset(self):
-        pk = self.kwargs.get('pk')
+        pk = self.kwargs.get("pk")
         return Feedback.objects.filter(finding=pk)
-
