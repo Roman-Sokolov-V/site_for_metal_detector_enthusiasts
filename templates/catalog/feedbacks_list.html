@@ -6,14 +6,16 @@
   <header class="header-2">
     <div class="page-header section-height-100 relative" style="background-image: url('{{ ASSETS_ROOT }}/img/curved-images/curved.jpg')">
       <div class="container">        
-        <div class="col-lg-7 text-center mx-auto">
+        <div class="col-lg-7 text-center mt-6 mx-auto">
           <h1 class="text-white pt-3 mt-n5">
-            Feedbacks
+            Feedbacks {% if object_list %} for finding 
+            {{ object_list.first.finding.name }}{% endif %}
           </h1>
-        </div>        
+          <br>
+        </div>
         <div class="text-light">              
-          {% if feedbacks %}
-            {% for feedback in page_obj %}
+          {% if object_list %}
+            {% for feedback in object_list %}
               <div class="row">
                 <div class="col-4">
                   <ul>
@@ -37,4 +39,5 @@
       </div>      
     </div>
   </header>  
+
 {% endblock %}

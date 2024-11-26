@@ -20,7 +20,7 @@ from catalog.views import (
     FindingsDeleteView,
     ImageCreateView,
     ImageDeleteView,
-    feedbacks_to_finding_view,
+    FeedbacksToFindingView,
 )
 
 
@@ -98,7 +98,7 @@ urlpatterns = [
     ),
     path(
         "feedbacks/<int:pk>/",
-        feedbacks_to_finding_view,
+        FeedbacksToFindingView.as_view(),
         name="feedbacks"
     ),
 ]
