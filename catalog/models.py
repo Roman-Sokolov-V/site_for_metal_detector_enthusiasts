@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Avg
 from django.db.models import Q
 
-from my_precious.settings import AUTH_USER_MODEL
+from my_precious.settings.base import AUTH_USER_MODEL
 
 RATING_CHOICES = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)]
 
